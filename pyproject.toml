@@ -1,0 +1,92 @@
+[project]
+name = "peculiar-audience"
+version = "1.0.0.dev1"
+description = "A collection of Python functions on iterables and collections inspired by the Kotlin collections standard library API."
+authors = [
+    {name = "Ryan Smith", email = "ryan.d.smith.106@gmail.com"},
+]
+dependencies = []
+requires-python = ">=3.9"
+readme = "README.md"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+package-type = "library"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=23.9.1",
+    "isort>=5.12.0",
+    "mypy>=1.5.1",
+    "bandit>=1.7.5",
+    "flake8>=6.1.0",
+    "types-requests>=2.31.0.9",
+    "types-PyYAML>=6.0.12.12",
+]
+test = [
+    "PyHamcrest>=2.0.4",
+    "pytest>=7.4.2",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.pdm.scripts]
+# testing
+test = "pytest"
+
+# static analysis
+check-formatting = { composite = [
+    "isort --check --settings-path ./pyproject.toml src/ tests/",
+    "black --check src/ tests/"
+]}
+format = { composite = [
+    "isort --settings-path ./pyproject.toml src/ tests/",
+    "black src/ tests/"
+]}
+lint = "flake8 --config .flake8 src/ tests/"
+type-check = "mypy --config-file ./pyproject.toml src/"
+security-scan = "bandit -rc pyproject.toml src/ tests/"
+
+[tool.isort]
+profile = "black"
+py_version = 39
+
+[tool.bandit]
+exclude_dirs = [
+    ".venv",
+    ".*_cache",
+    ".pdm-build",
+    "docs",
+    "htmlcov",
+    ".gitlab",
+]
+
+[tool.mypy]
+python_version = "3.9"
+exclude = '\.venv\.*'
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+disallow_subclassing_any = true
+strict_optional = true
+no_implicit_optional = true
+disallow_any_generics = true
+disallow_any_unimported = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_no_return = true
+warn_unreachable = true
+show_traceback = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "--cov=peculiar_audience",
+    "--cov-report=html",
+    "--cov-report=term",
+    "--cov-branch"
+]
+pythonpath = ["src"]
+testspath = ["tests"]
