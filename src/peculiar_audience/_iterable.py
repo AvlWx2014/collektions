@@ -9,6 +9,7 @@ __all__ = [
     "associate_to",
     "associate_with",
     "associate_with_to",
+    "average",
     "distinct",
     "distinct_by",
     "first",
@@ -21,6 +22,7 @@ __all__ = [
     "sum_by",
 ]
 
+from numbers import Real
 from typing import (
     Callable,
     Collection,
@@ -110,6 +112,23 @@ def associate_with_to(
         value = value_transform(item)
         destination[item] = value
     return destination
+
+
+def average(iterable: Iterable[Real]) -> float:
+    """Return the average (mean) of the values in ``iterable``.
+
+    If ``iterable`` has no items, then this function returns ``float("NaN")``,
+    which can be checked by ``math.isnan(average(...))``.
+
+    All items in ``iterable`` must be real numbers.
+    """
+
+    sum_ = 0
+    count = 0
+    for number in iterable:
+        sum_ += number
+        count += 1
+    return sum_ / count if count else float("NaN")
 
 
 def distinct(iterable: Iterable[T]) -> Collection[T]:

@@ -1,4 +1,6 @@
 from collections import namedtuple
+from math import isnan
+from numbers import Real
 from string import ascii_lowercase
 from typing import Callable, Hashable, Iterable, NamedTuple, Optional, Tuple
 
@@ -19,6 +21,7 @@ from peculiar_audience import (
     associate,
     associate_by,
     associate_with,
+    average,
     distinct,
     distinct_by,
     first,
@@ -58,6 +61,40 @@ def test_associate_with():
     expected = dict((letter, letter.upper()) for letter in ascii_lowercase)
     actual = associate_with(ascii_lowercase, str.upper)
     assert_that(actual, has_entries(expected))
+
+
+@pytest.mark.parametrize(
+    "values,expected",
+    [
+        (
+            range(10),
+            4.5,
+        ),
+        (
+            [1, 3, 5, 7, 9, 2, 4, 6, 8, 10],
+            5.5,
+        ),
+        (
+            [
+                1,
+            ]
+            * 10,
+            1,
+        ),
+        (
+            [4, 0, 69, 6, 54, 45, 99, 9, 25, 26],
+            33.7,
+        ),
+    ],
+)
+def test_average_non_empty(values: Iterable[Real], expected: float):
+    actual = average(values)
+    assert_that(actual, equal_to(expected))
+
+
+def test_average_returns_nan_on_empty():
+    actual = average([])
+    assert_that(isnan(actual))
 
 
 @pytest.mark.parametrize(
