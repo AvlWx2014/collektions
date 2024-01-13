@@ -89,4 +89,4 @@ addopts = [
     "--cov-branch"
 ]
 pythonpath = ["src"]
-testspath = ["tests"]
+testpaths = ["tests"]
