@@ -1,5 +1,6 @@
 from collections import namedtuple
-from typing import Callable, Hashable, Iterable, NamedTuple, Optional
+from string import ascii_lowercase
+from typing import Callable, Hashable, Iterable, NamedTuple, Optional, Tuple
 
 import pytest
 from hamcrest import (
@@ -8,12 +9,16 @@ from hamcrest import (
     contains_exactly,
     contains_inanyorder,
     equal_to,
+    has_entries,
     instance_of,
     is_,
     raises,
 )
 
 from peculiar_audience import (
+    associate,
+    associate_by,
+    associate_with,
     distinct,
     distinct_by,
     first,
@@ -31,6 +36,28 @@ from peculiar_audience._types import T
 class RandomObject(NamedTuple):
     property1: str
     property2: int
+
+
+def test_associate():
+    expected = dict((i, letter.upper()) for i, letter in enumerate(ascii_lowercase))
+
+    def _transform(letter: str) -> Tuple[int, str]:
+        return ascii_lowercase.index(letter), letter.upper()
+
+    actual = associate(ascii_lowercase, _transform)
+    assert_that(actual, has_entries(expected))
+
+
+def test_associate_by():
+    expected = dict((i, letter) for i, letter in enumerate(ascii_lowercase))
+    actual = associate_by(ascii_lowercase, lambda letter: ascii_lowercase.index(letter))
+    assert_that(actual, has_entries(expected))
+
+
+def test_associate_with():
+    expected = dict((letter, letter.upper()) for letter in ascii_lowercase)
+    actual = associate_with(ascii_lowercase, str.upper)
+    assert_that(actual, has_entries(expected))
 
 
 @pytest.mark.parametrize(

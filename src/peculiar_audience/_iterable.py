@@ -3,6 +3,12 @@
 from __future__ import annotations
 
 __all__ = [
+    "associate",
+    "associate_by",
+    "associate_by_to",
+    "associate_to",
+    "associate_with",
+    "associate_with_to",
     "distinct",
     "distinct_by",
     "first",
@@ -15,10 +21,95 @@ __all__ = [
     "sum_by",
 ]
 
-from typing import Callable, Collection, Hashable, Iterable, Optional, overload
+from typing import (
+    Callable,
+    Collection,
+    Hashable,
+    Iterable,
+    Mapping,
+    MutableMapping,
+    Optional,
+    Tuple,
+    overload,
+)
 
 from ._defaults import default_predicate
-from ._types import R, T
+from ._types import H, K, R, T, V
+
+
+def associate(
+    iterable: Iterable[T], transform: Callable[[T], Tuple[K, V]]
+) -> Mapping[K, V]:
+    """Transform ``iterable`` in to a mapping of key, value pairs as returned by ``transform``."""
+    return associate_to(iterable, transform, {})
+
+
+def associate_to(
+    iterable: Iterable[T],
+    transform: Callable[[T], Tuple[K, V]],
+    destination: MutableMapping[K, V],
+) -> Mapping[K, V]:
+    """Update ``destination`` with new entries from ``iterable`` transformed by ``transform``."""
+    for item in iterable:
+        key, value = transform(item)
+        destination[key] = value
+    return destination
+
+
+def associate_by(
+    iterable: Iterable[T], key_transform: Callable[[T], K]
+) -> Mapping[K, T]:
+    """Map items in ``iterable`` by keys prescribed by ``key_transform``.
+
+    Put another way, turn ``iterable`` in to a mapping of key, value pairs where the keys
+    are prescribed by ``key_transform`` and the values are the original items in ``iterable``.
+    """
+    return associate_by_to(iterable, key_transform, {})
+
+
+def associate_by_to(
+    iterable: Iterable[T],
+    key_transform: Callable[[T], K],
+    destination: MutableMapping[K, T],
+) -> Mapping[K, T]:
+    """Update ``destination`` with new entries from ``iterable``.
+
+    The keys in the new entries are prescribed by ``key_transform``, and the values are the
+    original items in ``iterable``.
+    """
+    for item in iterable:
+        key = key_transform(item)
+        destination[key] = item
+    return destination
+
+
+def associate_with(
+    iterable: Iterable[H], value_transform: Callable[[H], V]
+) -> Mapping[H, V]:
+    """Map items in ``iterable`` to values prescribed by ``value_transform``.
+
+    Put another way, turn ``iterable`` in to a mapping of key, value pairs where the keys
+    are the original items in ``iterable`` and the values are prescribed by ``value_transform``.
+
+    The items in ``iterable`` must be hashable.
+    """
+    return associate_with_to(iterable, value_transform, {})
+
+
+def associate_with_to(
+    iterable: Iterable[H],
+    value_transform: Callable[[H], V],
+    destination: MutableMapping[H, V],
+) -> Mapping[H, V]:
+    """Update ``destination`` with new entries from ``iterable``.
+
+    The keys in the new entries are the original items in ``iterable`` and the values
+    are prescribed by ``value_transform``.
+    """
+    for item in iterable:
+        value = value_transform(item)
+        destination[item] = value
+    return destination
 
 
 def distinct(iterable: Iterable[T]) -> Collection[T]:
