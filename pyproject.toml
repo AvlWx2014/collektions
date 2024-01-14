@@ -90,3 +90,8 @@ addopts = [
 ]
 pythonpath = ["src"]
 testpaths = ["tests"]
+
+[tool.coverage.report]
+exclude_also = [
+    '^\s*\.\.\.$'  # exclude lines which are Ellipsis objects
+]
