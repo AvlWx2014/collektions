@@ -10,6 +10,7 @@ __all__ = [
     "associate_with",
     "associate_with_to",
     "average",
+    "chunked",
     "distinct",
     "distinct_by",
     "first",
@@ -20,6 +21,7 @@ __all__ = [
     "map_not_none",
     "none",
     "sum_by",
+    "windowed",
 ]
 
 from numbers import Real
@@ -31,6 +33,7 @@ from typing import (
     Mapping,
     MutableMapping,
     Optional,
+    Sequence,
     Tuple,
     overload,
 )
@@ -129,6 +132,10 @@ def average(iterable: Iterable[Real]) -> float:
         sum_ += number
         count += 1
     return sum_ / count if count else float("NaN")
+
+
+def chunked(iterable: Iterable[T], size: int = 1) -> Iterable[Collection[T]]:
+    return windowed(iterable, size=size, step=size, allow_partial=True)
 
 
 def distinct(iterable: Iterable[T]) -> Collection[T]:
@@ -256,3 +263,26 @@ def sum_by(iterable, selector):
     for item in iterable:
         sum_ += selector(item)
     return sum_
+
+
+def windowed(
+    iterable: Iterable[T], size: int = 1, step: int = 1, allow_partial: bool = False
+) -> Iterable[Collection[T]]:
+    # TODO: add windowed_iterator function that does not require casting the whole
+    #  iterable to a list first
+    sequence = list(iterable) if not isinstance(iterable, Sequence) else iterable
+    range
+    return _windowed_iterator_sliced(sequence, size, step, allow_partial)
+
+
+def _windowed_iterator_sliced(
+    sequence: Sequence[T], size: int, step: int, allow_partial: bool
+) -> Iterable[Collection[T]]:
+    left = 0
+    while left < len(sequence):
+        right = left + size
+        window = sequence[left:right]
+        if len(window) < size and not allow_partial:
+            break
+        yield window
+        left = min(left + step, len(sequence))

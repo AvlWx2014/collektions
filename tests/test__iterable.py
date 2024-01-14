@@ -22,6 +22,7 @@ from peculiar_audience import (
     associate_by,
     associate_with,
     average,
+    chunked,
     distinct,
     distinct_by,
     first,
@@ -32,6 +33,7 @@ from peculiar_audience import (
     map_not_none,
     none,
     sum_by,
+    windowed,
 )
 from peculiar_audience._types import T
 
@@ -95,6 +97,37 @@ def test_average_non_empty(values: Iterable[Real], expected: float):
 def test_average_returns_nan_on_empty():
     actual = average([])
     assert_that(isnan(actual))
+
+
+@pytest.mark.parametrize(
+    "iterable,chunk_size,expected",
+    [
+        (
+            range(10),
+            1,
+            [
+                range(0, 1),
+                range(1, 2),
+                range(2, 3),
+                range(3, 4),
+                range(4, 5),
+                range(5, 6),
+                range(6, 7),
+                range(7, 8),
+                range(8, 9),
+                range(9, 10),
+            ],
+        ),
+        (range(10), 5, [range(5), range(5, 10)]),
+        (range(0), 1, []),
+        (range(10), 3, [range(3), range(3, 6), range(6, 9), range(9, 10)]),
+    ],
+)
+def test_chunked(
+    iterable: Iterable[int], chunk_size: int, expected: Iterable[Iterable[int]]
+):
+    actual = list(chunked(iterable, size=chunk_size))
+    assert_that(actual, equal_to(expected))
 
 
 @pytest.mark.parametrize(
@@ -261,4 +294,39 @@ def test_sum_by(iterable, type_, expected):
     ts = [T(value=type_(i)) for i in iterable]
     actual = sum_by(ts, lambda o: o.value)
     assert_that(actual, instance_of(type_))
+    assert_that(actual, equal_to(expected))
+
+
+@pytest.mark.parametrize(
+    "iterable,size,step,partial,expected",
+    [
+        (
+            range(10),
+            10,
+            1,
+            True,
+            [
+                range(0, 10),
+                range(1, 10),
+                range(2, 10),
+                range(3, 10),
+                range(4, 10),
+                range(5, 10),
+                range(6, 10),
+                range(7, 10),
+                range(8, 10),
+                range(9, 10),
+            ],
+        ),
+        (range(10), 10, 1, False, [range(0, 10)]),
+    ],
+)
+def test_windowed(
+    iterable: Iterable[int],
+    size: int,
+    step: int,
+    partial: bool,
+    expected: Iterable[Iterable[int]],
+):
+    actual = list(windowed(iterable, size, step, allow_partial=partial))
     assert_that(actual, equal_to(expected))
