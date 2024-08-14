@@ -13,42 +13,6 @@ readme = "README.md"
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-[tool.pdm]
-package-type = "library"
-
-[tool.pdm.dev-dependencies]
-dev = [
-    "black>=23.9.1",
-    "isort>=5.12.0",
-    "mypy>=1.5.1",
-    "bandit>=1.7.5",
-    "flake8>=6.1.0",
-    "types-requests>=2.31.0.9",
-    "types-PyYAML>=6.0.12.12",
-]
-test = [
-    "PyHamcrest>=2.0.4",
-    "pytest>=7.4.2",
-    "pytest-cov>=4.1.0",
-]
-
-[tool.pdm.scripts]
-# testing
-test = "pytest"
-
-# static analysis
-check-formatting = { composite = [
-    "isort --check --settings-path ./pyproject.toml src/ tests/",
-    "black --check src/ tests/"
-]}
-format = { composite = [
-    "isort --settings-path ./pyproject.toml src/ tests/",
-    "black src/ tests/"
-]}
-lint = "flake8 --config .flake8 src/ tests/"
-type-check = "mypy --config-file ./pyproject.toml src/"
-security-scan = "bandit -rc pyproject.toml src/ tests/"
-
 [tool.isort]
 profile = "black"
 py_version = 39
@@ -95,3 +59,38 @@ testpaths = ["tests"]
 exclude_also = [
     '^\s*\.\.\.$'  # exclude lines which are Ellipsis objects
 ]
+[tool.pdm]
+distribution = true
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=23.9.1",
+    "isort>=5.12.0",
+    "mypy>=1.5.1",
+    "bandit>=1.7.5",
+    "flake8>=6.1.0",
+    "types-requests>=2.31.0.9",
+    "types-PyYAML>=6.0.12.12",
+]
+test = [
+    "PyHamcrest>=2.0.4",
+    "pytest>=7.4.2",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.pdm.scripts]
+# testing
+test = "pytest"
+
+# static analysis
+check-formatting = { composite = [
+    "isort --check --settings-path ./pyproject.toml src/ tests/",
+    "black --check src/ tests/"
+]}
+format = { composite = [
+    "isort --settings-path ./pyproject.toml src/ tests/",
+    "black src/ tests/"
+]}
+lint = "flake8 --config .flake8 src/ tests/"
+type-check = "mypy --config-file ./pyproject.toml src/"
+security-scan = "bandit -rc pyproject.toml src/ tests/"
+
