@@ -220,6 +220,13 @@ def filter_not(
 def filter_not_none(iterable: Iterable[T | None]) -> Collection[T]:
     return [item for item in iterable if item is not None]
 
+
+def find(
+    iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
+) -> T | None:
+    return first_or_none(iterable, predicate)
+
+
 def first(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
 ) -> T:

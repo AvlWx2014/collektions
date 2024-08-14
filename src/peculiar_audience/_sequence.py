@@ -36,6 +36,12 @@ def drop_last_while(
     return result[::-1]
 
 
+def find_last(
+    sequence: Sequence[T], predicate: Callable[[T], bool] = default_predicate
+) -> T | None:
+    return last_or_none(sequence, predicate)
+
+
 def last(
     sequence: Sequence[T], predicate: Callable[[T], bool] = default_predicate
 ) -> T:
