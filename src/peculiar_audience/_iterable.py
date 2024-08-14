@@ -26,8 +26,10 @@ __all__ = [
     "windowed",
 ]
 
+from collections.abc import MutableSequence
 from numbers import Real
 from typing import (
+    Any,
     Callable,
     Collection,
     Hashable,
@@ -40,7 +42,7 @@ from typing import (
     overload,
 )
 
-from ._defaults import default_predicate
+from ._defaults import default_predicate, default_predicate_with_index
 from ._types import H, K, R, T, V
 from .preconditions import require
 
@@ -197,6 +199,26 @@ def drop_while(
     result.extend(iterator)
     return result
 
+
+def filter_indexed(
+    iterable: Iterable[T],
+    predicate: Callable[[int, T], bool] = default_predicate_with_index,
+) -> Collection[T]:
+    return [item for i, item in enumerate(iterable) if predicate(i, item)]
+
+
+def filter_isinstance(iterable: Iterable[Any], type_: type[R]) -> Collection[R]:
+    return [item for item in iterable if isinstance(item, type_)]
+
+
+def filter_not(
+    iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
+) -> Collection[T]:
+    return [item for item in iterable if not predicate(item)]
+
+
+def filter_not_none(iterable: Iterable[T | None]) -> Collection[T]:
+    return [item for item in iterable if item is not None]
 
 def first(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
