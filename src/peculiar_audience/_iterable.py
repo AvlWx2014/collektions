@@ -255,13 +255,16 @@ def first_or_none(
     return result
 
 
-def flat_map(*iterables: Iterable[T], mapping: Callable[[T], R]) -> Iterable[R]:
-    """Flatten ``iterables`` in to a single list comprising transformed items from each iterable.
-
-    Items from each iterable in ``iterables`` are transformed according to ``mapping``.
+def flat_map(
+    iterable: Iterable[T], transform: Callable[[T], Iterable[R]]
+) -> Collection[R]:
     """
-    # use built-in `map` to avoid allocating a list for each `map` operation
-    return (item for iterable in iterables for item in map(mapping, iterable))
+    Return the collection of items yielded from calling ``transform`` on each item of ``iterable``.
+    """
+    result = []
+    for item in iterable:
+        result.extend(transform(item))
+    return result
 
 
 def flatten(*iterables: Iterable[T]) -> Iterable[T]:

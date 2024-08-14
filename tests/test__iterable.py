@@ -47,7 +47,7 @@ from peculiar_audience import (
     sum_by,
     windowed,
 )
-from peculiar_audience._iterable import drop, drop_while
+from peculiar_audience._iterable import drop, drop_while, fold_indexed
 
 T = TypeVar("T")
 
@@ -298,10 +298,8 @@ def test_first_or_none(iterable, predicate, expected):
 
 
 def test_flat_map():
-    expected = ["0", "2", "4", "6", "8", "1", "3", "5", "7", "9"]
-    even = range(0, 10, 2)
-    odd = range(1, 10, 2)
-    actual = flat_map(even, odd, mapping=str)
+    expected = [0, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 3, 4, 5, 4, 5, 5]
+    actual = flat_map(range(6), lambda i: range(i, 6))
     assert_that(actual, contains_exactly(*expected))
 
 
