@@ -13,6 +13,8 @@ __all__ = [
     "chunked",
     "distinct",
     "distinct_by",
+    "drop",
+    "drop_while",
     "first",
     "first_or_none",
     "flat_map",
@@ -40,6 +42,7 @@ from typing import (
 
 from ._defaults import default_predicate
 from ._types import H, K, R, T, V
+from .preconditions import require
 
 
 def associate(
@@ -161,6 +164,40 @@ def distinct_by(
     return list(unique.values())
 
 
+def drop(iterable: Iterable[T], number: int) -> Collection[T]:
+    """Drop the first ``number`` items from ``iterable``."""
+    require(number >= 0, message="Number of elements to drop must be non-negative.")
+    if isinstance(iterable, Sequence):
+        # fast path for Sequences - just slice it
+        # note: this includes ranges
+        return iterable[number:]
+
+    iterator = iter(iterable)
+    while number:
+        try:
+            next(iterator)
+            number -= 1
+        except StopIteration:
+            # if we exhaust the iterator before reaching ``number`` items, then
+            # we break and return an empty list
+            break
+    return list(iterator)
+
+
+def drop_while(
+    iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
+) -> Collection[T]:
+    """Drop the first items from ``iterable`` that matching ``predicate``."""
+    result = []
+    iterator = iter(iterable)
+    for item in iterator:
+        if not predicate(item):
+            result.append(item)
+            break
+    result.extend(iterator)
+    return result
+
+
 def first(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
 ) -> T:
@@ -271,7 +308,6 @@ def windowed(
     # TODO: add windowed_iterator function that does not require casting the whole
     #  iterable to a list first
     sequence = list(iterable) if not isinstance(iterable, Sequence) else iterable
-    range
     return _windowed_iterator_sliced(sequence, size, step, allow_partial)
 
 

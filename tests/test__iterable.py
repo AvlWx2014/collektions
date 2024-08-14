@@ -1,8 +1,19 @@
+import string
 from collections import namedtuple
+from collections.abc import Collection, Sized
 from math import isnan
 from numbers import Real
 from string import ascii_lowercase
-from typing import Callable, Hashable, Iterable, NamedTuple, Optional, Tuple
+from typing import (
+    Any,
+    Callable,
+    Hashable,
+    Iterable,
+    NamedTuple,
+    Optional,
+    Tuple,
+    TypeVar,
+)
 
 import pytest
 from hamcrest import (
@@ -10,6 +21,7 @@ from hamcrest import (
     calling,
     contains_exactly,
     contains_inanyorder,
+    empty,
     equal_to,
     has_entries,
     instance_of,
@@ -35,7 +47,9 @@ from peculiar_audience import (
     sum_by,
     windowed,
 )
-from peculiar_audience._types import T
+from peculiar_audience._iterable import drop, drop_while
+
+T = TypeVar("T")
 
 
 class RandomObject(NamedTuple):
@@ -209,6 +223,47 @@ def test_distinct_family(
         actual = distinct_by(iterable, predicate)
 
     assert_that(actual, contains_inanyorder(*expected))
+
+
+@pytest.mark.parametrize(
+    "iterable,n,expected",
+    [
+        (range(10), 5, [5, 6, 7, 8, 9]),
+        (range(100), 99, [99]),
+        ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 5, [5, 6, 7, 8, 9]),
+        (string.ascii_lowercase, 13, "nopqrstuvwxyz"),
+        ((i for i in range(10)), 5, [5, 6, 7, 8, 9]),
+    ],
+)
+def test_drop(iterable: Iterable[T], n, expected: Collection[T]):
+    actual = drop(iterable, n)
+    assert_that(actual, contains_exactly(*expected))
+
+
+@pytest.mark.parametrize(
+    "iterable,n",
+    [
+        (range(0), 1),
+        (range(10), 10),
+        (range(5), 10),
+        ((i for i in range(5)), 10),
+    ],
+)
+def test_drop_all(iterable, n):
+    actual: Sized[int] = list(drop(iterable, n))
+    assert_that(actual, empty())
+
+
+def test_drop_while():
+    input_ = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
+    expected = [6, 8, 1, 3, 5, 7, 9]
+    actual = drop_while(input_, lambda x: x < 5)
+    assert_that(actual, contains_exactly(*expected))
+
+
+def test_drop_while_all():
+    actual: Sized[int] = list(drop_while(range(10)))
+    assert_that(actual, empty())
 
 
 @pytest.mark.parametrize(

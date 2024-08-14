@@ -1,7 +1,28 @@
-import pytest
-from hamcrest import assert_that, calling, equal_to, raises
+from collections.abc import Sized
 
-from peculiar_audience import last, last_or_none
+import pytest
+from hamcrest import assert_that, calling, contains_exactly, empty, equal_to, raises
+
+from peculiar_audience import drop_last, last, last_or_none
+from peculiar_audience._sequence import drop_last_while
+
+
+def test_drop_last():
+    expected = [0, 1, 2, 3, 4]
+    actual = drop_last(range(10), 5)
+    assert_that(actual, contains_exactly(*expected))
+
+
+def test_drop_last_while():
+    input_ = [0, 2, 4, 6, 8, 1, 3, 5, 7, 9]
+    expected = [0, 2, 4, 6, 8, 1, 3]
+    actual = drop_last_while(input_, lambda x: x >= 5)
+    assert_that(actual, contains_exactly(*expected))
+
+
+def test_drop_last_while_all():
+    actual: Sized[int] = list(drop_last_while(range(10)))
+    assert_that(actual, empty())
 
 
 @pytest.mark.parametrize(
