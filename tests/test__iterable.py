@@ -56,6 +56,10 @@ from peculiar_audience._iterable import (
     on_each,
     on_each_indexed,
     partition,
+    reduce,
+    reduce_indexed,
+    reduce_indexed_or_none,
+    reduce_or_none,
 )
 
 T = TypeVar("T")
@@ -505,6 +509,46 @@ def test_on_each_indexed():
     return_value = on_each_indexed(inputs, lambda idx, it: log.append(it + idx))
     assert_that(log, equal_to(expected))
     assert_that(return_value, same_instance(inputs))
+
+
+def test_reduce():
+    n = 10
+    inputs = range(n)
+    expected = n * (n - 1) / 2
+    actual = reduce(inputs, lambda acc, value: acc + value)
+    assert_that(actual, equal_to(expected))
+
+
+def test_reduce_empty():
+    with pytest.raises(StopIteration):
+        reduce((), lambda acc, it: it)
+
+
+def test_reduce_indexed():
+    n = 10
+    inputs = range(n)
+    expected = n - 1
+    actual = reduce_indexed(inputs, lambda idx, acc, value: acc + value - idx + 1)
+    assert_that(actual, equal_to(expected))
+
+
+def test_reduce_indexed_empty():
+    with pytest.raises(StopIteration):
+        reduce_indexed((), lambda idx, acc, it: it)
+
+
+def test_reduce_indexed_or_none():
+    actual = reduce_indexed_or_none((), lambda idx, acc, it: it)
+    assert_that(
+        actual, is_(None)  # not using hamcrest's none() function here as it shadows ours
+    )
+
+
+def test_reduce_or_none():
+    actual = reduce_or_none((), lambda acc, it: it)
+    assert_that(
+        actual, is_(None)  # not using hamcrest's none() function here as it shadows ours
+    )
 
 
 @pytest.mark.parametrize(

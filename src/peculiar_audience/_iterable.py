@@ -35,6 +35,10 @@ __all__ = [
     "none",
     "on_each",
     "on_each_indexed",
+    "reduce",
+    "reduce_indexed",
+    "reduce_indexed_or_none",
+    "reduce_or_none",
     "sum_by",
     "windowed",
 ]
@@ -567,6 +571,67 @@ def partition(
         dest = left if predicate(item) else right
         dest.append(item)
     return left, right
+
+
+def reduce(iterable: Iterable[T], accumulator: Callable[[T, T], T]) -> T:
+    """Accumulates value from left to right starting with the first element.
+
+    ``accumulator`` takes the current accumulated value and the next value in ``iterable``.
+
+    Raises:
+        StopIteration: if ``iterable`` is empty.
+    """
+    iterator = iter(iterable)
+    acc = next(iterator)
+    for item in iterator:
+        acc = accumulator(acc, item)
+    return acc
+
+
+def reduce_indexed(iterable: Iterable[T], accumulator: Callable[[int, T, T], T]) -> T:
+    """Accumulates value from left to right starting with the first element.
+
+    ``accumulator`` takes the accumulated value so far, as well as the next element in ``iterable``
+    and its index.
+
+    Raises:
+        StopIteration: if ``iterable`` is empty.
+    """
+    iterator = iter(iterable)
+    acc = next(iterator)
+    for idx, item in enumerate(iterator, start=1):
+        acc = accumulator(idx, acc, item)
+    return acc
+
+
+def reduce_indexed_or_none(
+    iterable: Iterable[T], accumulator: Callable[[int, T, T], T]
+) -> T:
+    """Accumulates value from left to right starting with the first element.
+
+    ``accumulator`` takes the accumulated value so far, as well as the next element in ``iterable``
+    and its index.
+
+    This function returns `None` if ``iterable`` is empty rather than raising.
+    """
+    try:
+        reduce_indexed(iterable, accumulator)
+    except StopIteration:
+        return None
+
+
+def reduce_or_none(iterable: Iterable[T], accumulator: Callable[[T, T], T]) -> T | None:
+    """Accumulates value from left to right starting with the first element.
+
+    ``accumulator`` takes the accumulated value so far, as well as the next element in ``iterable``.
+
+    This function returns `None` if ``iterable`` is empty rather than raising.
+    """
+    try:
+        reduce(iterable, accumulator)
+    except StopIteration:
+        return None
+
 
 
 
