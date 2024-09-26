@@ -68,7 +68,7 @@ from typing import (
 )
 
 from ._defaults import default_predicate, default_predicate_with_index, identity
-from ._types import C, H, K, R, T, V
+from ._types import C, K, R, T, V
 from .preconditions import require
 
 
@@ -119,8 +119,8 @@ def associate_by_to(
 
 
 def associate_with(
-    iterable: Iterable[H], value_transform: Callable[[H], V]
-) -> Mapping[H, V]:
+    iterable: Iterable[T], value_transform: Callable[[T], V]
+) -> Mapping[T, V]:
     """Map items in ``iterable`` to values prescribed by ``value_transform``.
 
     Put another way, turn ``iterable`` in to a mapping of key, value pairs where the keys
@@ -132,10 +132,10 @@ def associate_with(
 
 
 def associate_with_to(
-    iterable: Iterable[H],
-    value_transform: Callable[[H], V],
-    destination: MutableMapping[H, V],
-) -> Mapping[H, V]:
+    iterable: Iterable[T],
+    value_transform: Callable[[T], V],
+    destination: MutableMapping[T, V],
+) -> Mapping[T, V]:
     """Update ``destination`` with new entries from ``iterable``.
 
     The keys in the new entries are the original items in ``iterable`` and the values
