@@ -62,6 +62,8 @@ from peculiar_audience._iterable import (
     reduce_or_none,
     running_fold,
     running_fold_indexed,
+    single,
+    single_or_none,
 )
 
 T = TypeVar("T")
@@ -569,6 +571,37 @@ def test_running_fold_indexed():
     expected = [10, 10, 12, 16, 22, 30, 40, 52, 66, 82, 100]
     actual = running_fold_indexed(inputs, n, lambda idx, acc, it: acc + it + idx)
     assert_that(actual, equal_to(expected))
+
+
+def test_single():
+    expected = 10
+    actual = single([10])
+    assert_that(actual, equal_to(expected))
+
+
+def test_single_empty():
+    with pytest.raises(ValueError):
+        single(())
+
+
+def test_single_with_predicate():
+    expected = 5
+    actual = single(range(1, 10), lambda it: it % 5 == 0)
+    assert_that(actual, equal_to(expected))
+
+
+def test_single_with_predicate_raises():
+    with pytest.raises(ValueError):
+        single(range(10), lambda it: it % 5 == 0)
+
+
+def test_single_or_none_empty():
+    assert_that(single_or_none(()), is_(None))
+
+
+def test_single_or_none_multiple_candidates():
+    actual = single_or_none(range(10), lambda it: it % 5 == 0)
+    assert_that(actual, is_(None))
 
 
 @pytest.mark.parametrize(

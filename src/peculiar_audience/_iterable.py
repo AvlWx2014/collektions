@@ -41,6 +41,8 @@ __all__ = [
     "reduce_or_none",
     "running_fold",
     "running_fold_indexed",
+    "single",
+    "single_or_none",
     "sum_by",
     "windowed",
 ]
@@ -681,6 +683,63 @@ def running_fold_indexed(
 
 scan = running_fold
 scan_indexed = running_fold_indexed
+
+
+@overload
+def single(iterable: Iterable[T]) -> T:
+    ...
+
+
+@overload
+def single(iterable: Iterable[T], predicate: Callable[[T], bool]) -> T:
+    ...
+
+
+def single(
+    iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
+) -> T:
+    """Return the single item in ``iterable``.
+
+    If ``predicate`` is provided, then this returns the single item matching ``predicate``.
+
+    Raises:
+        StopIteration: if ``iterable`` is empty.
+        ValueError: if ``iterable`` contains more than one item.
+    """
+    candidate: T | None = None
+    for item in iterable:
+        if predicate(item):
+            if candidate is not None:
+                raise ValueError("More than one value found")
+            candidate = item
+    if candidate is None:
+        raise ValueError("No values found")
+    return candidate
+
+
+@overload
+def single_or_none(iterable: Iterable[T]) -> T | None:
+    ...
+
+
+@overload
+def single_or_none(iterable: Iterable[T], predicate: Callable[[T], bool]) -> T | None:
+    ...
+
+
+def single_or_none(
+    iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
+) -> T | None:
+    """Return the single item in ``iterable``.
+
+    If ``predicate`` is provided, then this returns the single item matching ``predicate``.
+
+    This function returns `None` if ``iterable`` is empty or has more than one matching
+    value instead of raising.
+    """
+    with suppress(ValueError):
+        return single(iterable, predicate)
+    return None
 
 
 @overload
