@@ -1,6 +1,13 @@
 from __future__ import annotations
 
-__all__ = ["filter_keys", "filter_values", "map_keys", "map_keys_to", "map_values", "map_values_to"]
+__all__ = [
+    "filter_keys",
+    "filter_values",
+    "map_keys",
+    "map_keys_to",
+    "map_values",
+    "map_values_to",
+]
 
 from collections.abc import MutableMapping
 from typing import Callable, Iterable, Mapping, MutableSequence
