@@ -28,11 +28,16 @@ __all__ = [
     "map_indexed",
     "map_indexed_not_none",
     "map_not_none",
+    "max_by",
+    "max_of",
+    "min_by",
+    "min_of",
     "none",
     "sum_by",
     "windowed",
 ]
 
+from contextlib import suppress
 from numbers import Real
 from typing import (
     Any,
@@ -49,7 +54,7 @@ from typing import (
 )
 
 from ._defaults import default_predicate, default_predicate_with_index, identity
-from ._types import H, K, R, T, V
+from ._types import C, H, K, R, T, V
 from .preconditions import require
 
 
@@ -432,6 +437,77 @@ def map_indexed_not_none(
             result.append(mapped)
     return result
 
+
+def max_by(iterable: Iterable[T], selector: Callable[[T], C]) -> T:
+    """Return the first element yielding the largest value of the given ``selector``.
+
+    ``selector`` must return something that is comparable.
+
+    Raises:
+        StopIteration: if ``iterable`` is empty.
+    """
+    iterator = iter(iterable)
+    max_ = next(iterator)
+    max_value = selector(max_)
+    for item in iterator:
+        value = selector(item)
+        if value > max_value:
+            max_ = item
+            max_value = value
+    return max_
+
+
+def max_of(iterable: Iterable[T], transform: Callable[[T], C]) -> C:
+    """Return the maximum value resulting from applying ``transform`` to each item in ``iterable``.
+
+    ``transform`` must return something that is comparable.
+
+    Raises:
+        StopIteration: if ``iterable`` is empty.
+    """
+    iterator = iter(iterable)
+    max_ = transform(next(iterator))
+    for item in iterator:
+        value = transform(item)
+        if value > max_:
+            max_ = value
+    return max_
+
+
+def min_by(iterable: Iterable[T], selector: Callable[[T], C]) -> T:
+    """Return the first element yielding the smallest value of the given ``selector``.
+
+    ``selector`` must return something that is comparable.
+
+    Raises:
+        StopIteration: if ``iterable`` is empty.
+    """
+    iterator = iter(iterable)
+    min_ = next(iterator)
+    min_value = selector(min_)
+    for item in iterator:
+        value = selector(item)
+        if value < min_value:
+            min_ = item
+            min_value = value
+    return min_
+
+
+def min_of(iterable: Iterable[T], transform: Callable[[T], C]) -> C:
+    """Return the minimum value resulting from applying ``transform`` to each item in ``iterable``.
+
+    ``transform`` must return something that is comparable.
+
+    Raises:
+        StopIteration: if ``iterable`` is empty.
+    """
+    iterator = iter(iterable)
+    min_ = transform(next(iterator))
+    for item in iterator:
+        value = transform(item)
+        if value < min_:
+            min_ = value
+    return min_
 
 
 def none(

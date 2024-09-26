@@ -48,6 +48,10 @@ from peculiar_audience._iterable import (
     is_not_empty,
     map_indexed,
     map_indexed_not_none,
+    max_by,
+    max_of,
+    min_by,
+    min_of,
 )
 
 T = TypeVar("T")
@@ -396,6 +400,66 @@ def test_map_indexed_not_none():
         inputs, lambda idx, i: str(i + idx) if i % 2 == 0 else None
     )
     assert_that(actual, equal_to(expected))
+
+
+def test_max_by():
+    inputs = [
+        RandomObject(letter, index)
+        for index, letter in enumerate(ascii_lowercase, start=1)
+    ]
+    expected = RandomObject("z", 26)
+    actual = max_by(inputs, lambda it: it.property2)
+    assert_that(actual, equal_to(expected))
+
+
+def test_max_by_empty():
+    with pytest.raises(StopIteration):
+        max_by((), lambda it: it)
+
+
+def test_max_of():
+    inputs = [
+        RandomObject(letter, index)
+        for index, letter in enumerate(ascii_lowercase, start=1)
+    ]
+    expected = 26
+    actual = max_of(inputs, lambda it: it.property2)
+    assert_that(actual, equal_to(expected))
+
+
+def test_max_of_empty():
+    with pytest.raises(StopIteration):
+        max_of((), lambda it: it)
+
+
+def test_min_by():
+    inputs = [
+        RandomObject(letter, index)
+        for index, letter in enumerate(ascii_lowercase, start=1)
+    ]
+    expected = RandomObject("a", 1)
+    actual = min_by(inputs, lambda it: it.property1)
+    assert_that(actual, equal_to(expected))
+
+
+def test_min_by_empty():
+    with pytest.raises(StopIteration):
+        min_by((), lambda it: it)
+
+
+def test_min_of():
+    inputs = [
+        RandomObject(letter, index)
+        for index, letter in enumerate(ascii_lowercase, start=1)
+    ]
+    expected = "a"
+    actual = min_of(inputs, lambda it: it.property1)
+    assert_that(actual, equal_to(expected))
+
+
+def test_min_of_empty():
+    with pytest.raises(StopIteration):
+        min_of((), lambda it: it)
 
 
 @pytest.mark.parametrize(
