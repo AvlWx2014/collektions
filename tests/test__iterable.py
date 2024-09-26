@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import string
 from collections import namedtuple
-from collections.abc import Collection, Sized
+from collections.abc import Collection, Hashable, Iterable, Sized
 from math import isnan
 from numbers import Real
 from string import ascii_lowercase
-from typing import Callable, Hashable, Iterable, NamedTuple, TypeVar
+from typing import Callable, NamedTuple, TypeVar
 
 import pytest
 from hamcrest import (

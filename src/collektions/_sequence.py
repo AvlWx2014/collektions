@@ -9,7 +9,8 @@ __all__ = [
     "take_last_while",
 ]
 
-from typing import Callable, Sequence
+from collections.abc import Sequence
+from typing import Callable
 
 from ._defaults import default_predicate
 from ._types import R, T

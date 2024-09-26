@@ -50,18 +50,20 @@ __all__ = [
     "windowed",
 ]
 
-from collections.abc import Generator
-from contextlib import suppress
-from numbers import Real
-from typing import (
-    Any,
-    Callable,
+from collections.abc import (
     Collection,
+    Generator,
     Hashable,
     Iterable,
     Mapping,
     MutableMapping,
     Sequence,
+)
+from contextlib import suppress
+from numbers import Real
+from typing import (
+    Any,
+    Callable,
     overload,
 )
 

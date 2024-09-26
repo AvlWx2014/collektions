@@ -30,7 +30,8 @@ functions:
     all_of_them = all(iterable, predicate)
 """
 
-from typing import Callable, Iterable
+from collections.abc import Iterable
+from typing import Callable
 
 from ._types import R, T
 
