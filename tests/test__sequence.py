@@ -4,7 +4,7 @@ import pytest
 from hamcrest import assert_that, calling, contains_exactly, empty, equal_to, raises
 
 from peculiar_audience import drop_last, last, last_or_none
-from peculiar_audience._sequence import drop_last_while
+from peculiar_audience._sequence import drop_last_while, fold_right, fold_right_indexed
 
 
 def test_drop_last():
@@ -23,6 +23,24 @@ def test_drop_last_while():
 def test_drop_last_while_all():
     actual: Sized[int] = list(drop_last_while(range(10)))
     assert_that(actual, empty())
+
+
+def test_fold_right():
+    n = 10
+    inputs = range(10, 0, -1)
+    expected = n * (n + 1) / 2
+    actual = fold_right(inputs, 0, lambda acc, value: acc + value)
+    assert_that(actual, equal_to(expected))
+
+
+def test_fold_right_indexed():
+    n = 10
+    inputs = range(10)
+    expected = n
+    actual = fold_right_indexed(
+        inputs, 0, lambda idx, value, acc: acc + value - idx + 1
+    )
+    assert_that(actual, equal_to(expected))
 
 
 @pytest.mark.parametrize(

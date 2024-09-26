@@ -5,7 +5,7 @@ __all__ = ["drop_last", "drop_last_while", "last", "last_or_none"]
 from typing import Callable, Sequence
 
 from ._defaults import default_predicate
-from ._types import T
+from ._types import R, T
 from .preconditions import require
 
 
@@ -40,6 +40,36 @@ def find_last(
     sequence: Sequence[T], predicate: Callable[[T], bool] = default_predicate
 ) -> T | None:
     return last_or_none(sequence, predicate)
+
+
+def fold_right(
+    sequence: Sequence[T], initial_value: R, accumulator: Callable[[T, R], R]
+) -> R:
+    """Accumulates value starting from ``initial_value``.
+
+    Accumulation starts from ``initial_value`` and applies ``accumulator`` from right
+    to left across ``iterable`` passing the current accumulated value with each item.
+    """
+    acc = initial_value
+    for item in reversed(sequence):
+        acc = accumulator(item, acc)
+    return acc
+
+
+def fold_right_indexed(
+    sequence: Sequence[T], initial_value: R, accumulator: Callable[[int, T, R], R]
+) -> R:
+    """Accumulates value starting from ``initial_value``.
+
+    Accumulation starts from ``initial_value`` and applies ``accumulator`` from right
+    to left across ``iterable`` passing the current accumulated value, the current index,
+    and the curren item at that index.
+    """
+    n = len(sequence)
+    acc = initial_value
+    for idx, item in enumerate(reversed(sequence)):
+        acc = accumulator(n - idx - 1, item, acc)
+    return acc
 
 
 def last(
