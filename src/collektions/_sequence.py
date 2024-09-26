@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__all__ = ["drop_last", "drop_last_while", "last", "last_or_none"]
+__all__ = ["drop_last", "drop_last_while", "last", "last_or_none", "take_last", "take_last_while"]
 
 from typing import Callable, Sequence
 
