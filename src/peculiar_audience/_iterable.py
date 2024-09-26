@@ -20,6 +20,7 @@ __all__ = [
     "flat_map",
     "flatten",
     "fold",
+    "fold_indexed",
     "map_not_none",
     "none",
     "sum_by",
@@ -283,6 +284,21 @@ def fold(
     acc = initial_value
     for item in iterable:
         acc = accumulator(acc, item)
+    return acc
+
+
+def fold_indexed(
+    iterable: Iterable[T], initial_value: R, accumulator: Callable[[int, R, T], R]
+) -> R:
+    """Accumulates value starting from ``initial_value``.
+
+    Accumulation starts from ``initial_value`` and applies ``accumulator`` from left
+    to right across ``iterable`` passing the current accumulated value, the current index,
+    and the curren item at that index.
+    """
+    acc = initial_value
+    for idx, item in enumerate(iterable):
+        acc = accumulator(idx, acc, item)
     return acc
 
 

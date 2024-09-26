@@ -4,16 +4,7 @@ from collections.abc import Collection, Sized
 from math import isnan
 from numbers import Real
 from string import ascii_lowercase
-from typing import (
-    Any,
-    Callable,
-    Hashable,
-    Iterable,
-    NamedTuple,
-    Optional,
-    Tuple,
-    TypeVar,
-)
+from typing import Callable, Hashable, Iterable, NamedTuple, Optional, Tuple, TypeVar
 
 import pytest
 from hamcrest import (
@@ -315,6 +306,15 @@ def test_fold():
     inputs = range(10)
     expected = sum(inputs)
     actual = fold(inputs, 0, lambda x, y: x + y)
+    assert_that(actual, equal_to(expected))
+
+
+def test_fold_indexed():
+    n = 10
+    inputs = range(n)
+    expected = n
+    # quite possibly the hardest way of adding 1 together n times
+    actual = fold_indexed(inputs, 0, lambda x, i, y: x + y - i + 1)
     assert_that(actual, equal_to(expected))
 
 
