@@ -164,18 +164,18 @@ def average(iterable: Iterable[Real]) -> float:
     return sum_ / count if count else float("NaN")
 
 
-def chunked(iterable: Iterable[T], size: int = 1) -> Iterable[Collection[T]]:
+def chunked(iterable: Iterable[T], size: int = 1) -> Iterable[Sequence[T]]:
     return windowed(iterable, size=size, step=size, allow_partial=True)
 
 
-def distinct(iterable: Iterable[T]) -> Collection[T]:
+def distinct(iterable: Iterable[T]) -> list[T]:
     """Return a collection of distinct items from ``iterable``."""
     return distinct_by(iterable, hash)
 
 
 def distinct_by(
     iterable: Iterable[T], selector: Callable[[T], Hashable]
-) -> Collection[T]:
+) -> list[T]:
     """Return a collection of distinct items from ``iterable`` using ``selector`` as the key.
 
     If two items in ``iterable`` map to the same value from ``selector``, the first one
@@ -191,7 +191,7 @@ def distinct_by(
     return list(unique.values())
 
 
-def drop(iterable: Iterable[T], number: int) -> Collection[T]:
+def drop(iterable: Iterable[T], number: int) -> Sequence[T]:
     """Drop the first ``number`` items from ``iterable``."""
     require(number >= 0, message="Number of elements to drop must be non-negative.")
     if isinstance(iterable, Sequence):
@@ -213,7 +213,7 @@ def drop(iterable: Iterable[T], number: int) -> Collection[T]:
 
 def drop_while(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
-) -> Collection[T]:
+) -> list[T]:
     """Drop the first items from ``iterable`` that matching ``predicate``."""
     result = []
     iterator = iter(iterable)
@@ -228,21 +228,21 @@ def drop_while(
 def filter_indexed(
     iterable: Iterable[T],
     predicate: Callable[[int, T], bool] = default_predicate_with_index,
-) -> Collection[T]:
+) -> list[T]:
     return [item for i, item in enumerate(iterable) if predicate(i, item)]
 
 
-def filter_isinstance(iterable: Iterable[Any], type_: type[R]) -> Collection[R]:
+def filter_isinstance(iterable: Iterable[Any], type_: type[R]) -> list[R]:
     return [item for item in iterable if isinstance(item, type_)]
 
 
 def filter_not(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
-) -> Collection[T]:
+) -> list[T]:
     return [item for item in iterable if not predicate(item)]
 
 
-def filter_not_none(iterable: Iterable[T | None]) -> Collection[T]:
+def filter_not_none(iterable: Iterable[T | None]) -> list[T]:
     return [item for item in iterable if item is not None]
 
 
@@ -268,7 +268,7 @@ def first(
 
 def first_or_none(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
-) -> Optional[T]:
+) -> T | None:
     """
     Return the first item of ``collection`` matching ``predicate`` or `None` if no item matches.
     """
@@ -282,7 +282,7 @@ def first_or_none(
 
 def flat_map(
     iterable: Iterable[T], transform: Callable[[T], Iterable[R]]
-) -> Collection[R]:
+) -> list[R]:
     """
     Return the collection of items yielded from calling ``transform`` on each item of ``iterable``.
     """
@@ -415,14 +415,14 @@ def is_not_empty(iterable: Iterable[T]) -> bool:
     return not is_empty(iterable)
 
 
-def map_indexed(iterable: Iterable[T], mapping: Callable[[int, T], R]) -> Collection[R]:
+def map_indexed(iterable: Iterable[T], mapping: Callable[[int, T], R]) -> list[R]:
     """Transform elements of ``iterable`` by applying ``mapping`` to each element and its index."""
     return [mapping(idx, item) for idx, item in enumerate(iterable)]
 
 
 def map_not_none(
     iterable: Iterable[T], mapping: Callable[[T], R | None]
-) -> Collection[R]:
+) -> list[R]:
     """Transform items in ``iterable`` by applying ``mapping`` to each element.
 
     If ``mapping`` returns `None` for an element, then that element is filtered out of the
@@ -438,7 +438,7 @@ def map_not_none(
 
 def map_indexed_not_none(
     iterable: Iterable[T], mapping: Callable[[int, T], R | None]
-) -> Collection[R]:
+) -> list[R]:
     """Transform items in ``iterable`` by applying ``mapping`` to each element and its index.
 
     If ``mapping`` returns `None` for an element, then that element is filtered out of the
@@ -566,7 +566,7 @@ def on_each_indexed(
 
 def partition(
     iterable: Iterable[T], predicate: Callable[[T], bool]
-) -> tuple[Collection[T], Collection[T]]:
+) -> tuple[list[T], list[T]]:
     """Partition ``iterable`` in to two disjoint collections using ``predicate``.
 
     Returns:
@@ -808,7 +808,7 @@ def unzip(iterable: Iterable[tuple[T, R]]) -> tuple[list[T], list[R]]:
 
 def windowed(
     iterable: Iterable[T], size: int = 1, step: int = 1, allow_partial: bool = False
-) -> Iterable[Collection[T]]:
+) -> Iterable[Sequence[T]]:
     # TODO: add windowed_iterator function that does not require casting the whole
     #  iterable to a list first
     sequence = list(iterable) if not isinstance(iterable, Sequence) else iterable
@@ -817,7 +817,7 @@ def windowed(
 
 def _windowed_iterator_sliced(
     sequence: Sequence[T], size: int, step: int, allow_partial: bool
-) -> Iterable[Collection[T]]:
+) -> Iterable[Sequence[T]]:
     left = 0
     while left < len(sequence):
         right = left + size

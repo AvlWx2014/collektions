@@ -117,7 +117,7 @@ def take_last(sequence: Sequence[T], n: int) -> Sequence[T]:
 
 def take_last_while(
     sequence: Sequence[T], predicate: Callable[[T], bool]
-) -> Sequence[T]:
+) -> list[T]:
     """Return the right-most items in ``sequence`` satisfying ``predicate``.
 
     In other words, all items in ``sequence`` working backwards from the end satisfying
