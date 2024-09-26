@@ -229,27 +229,31 @@ def filter_indexed(
     iterable: Iterable[T],
     predicate: Callable[[int, T], bool] = default_predicate_with_index,
 ) -> list[T]:
+    """Filter ``iterable`` to items satisfying ``predicate``.
+
+    ``predicate`` is called with both the item and its index in the original iterable.
+    """
     return [item for i, item in enumerate(iterable) if predicate(i, item)]
 
 
 def filter_isinstance(iterable: Iterable[Any], type_: type[R]) -> list[R]:
+    """Filter ``iterable`` for instances of ``type_``."""
     return [item for item in iterable if isinstance(item, type_)]
 
 
 def filter_not(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
 ) -> list[T]:
+    """Filter ``iterable`` to items that don't satisfy ``predicate``."""
     return [item for item in iterable if not predicate(item)]
 
 
 def filter_not_none(iterable: Iterable[T | None]) -> list[T]:
+    """Filter ``iterable`` to items that are not `None`.
+    """
     return [item for item in iterable if item is not None]
 
 
-def find(
-    iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
-) -> T | None:
-    return first_or_none(iterable, predicate)
 
 
 def first(
@@ -278,6 +282,10 @@ def first_or_none(
         result = None
 
     return result
+
+
+find = first_or_none
+"""An alias for first_or_none for situations where ``find`` makes more sense contextually."""
 
 
 def flat_map(
@@ -807,6 +815,15 @@ def unzip(iterable: Iterable[tuple[T, R]]) -> tuple[list[T], list[R]]:
 def windowed(
     iterable: Iterable[T], size: int = 1, step: int = 1, allow_partial: bool = False
 ) -> Iterable[Sequence[T]]:
+    """Return a sliding window view of ``iterable`` with window size ``size``.
+
+    If the length of ``iterable`` is not evenly divisible by ``size`` and ``allow_partial``
+    is `True`, then the remaining len(iterable) - len(iterable) // size items will be returned
+    in a partial window. If ``allow_partial`` is `False`, then only full-size windows
+    will be returned.
+
+    The window moves ``step`` steps each time.
+    """
     # TODO: add windowed_iterator function that does not require casting the whole
     #  iterable to a list first
     sequence = list(iterable) if not isinstance(iterable, Sequence) else iterable
