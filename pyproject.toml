@@ -1,6 +1,5 @@
 [project]
 name = "peculiar-audience"
-version = "1.0.0.dev1"
 description = "A collection of Python functions on iterables and collections inspired by the Kotlin collections standard library API."
 authors = [
     {name = "Ryan Smith", email = "ryan.d.smith.106@gmail.com"},
@@ -8,10 +7,12 @@ authors = [
 dependencies = []
 requires-python = ">=3.9"
 readme = "README.md"
+dynamic = ["version"]
 
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
 
 [tool.isort]
 profile = "black"
@@ -94,3 +95,8 @@ lint = "flake8 --config .flake8 src/ tests/"
 type-check = "mypy --config-file ./pyproject.toml src/"
 security-scan = "bandit -rc pyproject.toml src/ tests/"
 
+[tool.pdm.version]
+fallback_version = "0.0.0"
+source = "scm"
+write_template = "__version__: str = \"{}\"\n"
+write_to = "peculiar_audience/version.py"
