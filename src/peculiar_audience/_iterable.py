@@ -748,7 +748,7 @@ def sum_by(iterable: Iterable[T], selector: Callable[[T], int]) -> int:
 
 
 @overload
-def sum_by(iterable: Iterable[T], selector: Callable[[T], float]) -> float:
+def sum_by(iterable: Iterable[T], selector: Callable[[T], float | int]) -> float:
     ...
 
 
