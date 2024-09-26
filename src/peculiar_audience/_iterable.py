@@ -552,6 +552,23 @@ def on_each_indexed(
     return iterable
 
 
+def partition(
+    iterable: Iterable[T], predicate: Callable[[T], bool]
+) -> tuple[Collection[T], Collection[T]]:
+    """Partition ``iterable`` in to two disjoint collections using ``predicate``.
+
+    Returns:
+        A `left` and `right` collection. Items in the `left` collection yielded a value of `True`
+            for the given function, while items in the `right` collection yielded a value of
+            `False`.
+    """
+    left, right = [], []
+    for item in iterable:
+        dest = left if predicate(item) else right
+        dest.append(item)
+    return left, right
+
+
 
 @overload
 def sum_by(iterable: Iterable[T], selector: Callable[[T], int]) -> int:

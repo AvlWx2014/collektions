@@ -55,6 +55,7 @@ from peculiar_audience._iterable import (
     min_of,
     on_each,
     on_each_indexed,
+    partition,
 )
 
 T = TypeVar("T")
@@ -487,6 +488,14 @@ def test_on_each():
     return_value = on_each(inputs, action)
     assert_that(log, equal_to(expected))
     assert_that(return_value, same_instance(inputs))
+
+
+def test_partition():
+    inputs = range(10)
+    expected_left, expected_right = [0, 2, 4, 6, 8], [1, 3, 5, 7, 9]
+    evens, odds = partition(inputs, lambda it: it % 2 == 0)
+    assert_that(evens, equal_to(expected_left))
+    assert_that(odds, equal_to(expected_right))
 
 
 def test_on_each_indexed():
