@@ -33,6 +33,8 @@ __all__ = [
     "min_by",
     "min_of",
     "none",
+    "on_each",
+    "on_each_indexed",
     "sum_by",
     "windowed",
 ]
@@ -518,6 +520,37 @@ def none(
         if predicate(item):
             return False
     return True
+
+
+def on_each(iterable: Iterable[T], action: Callable[[T], None]) -> Iterable[T]:
+    """Invoke ``action`` on each element of ``iterable``.
+
+    Returns:
+        The original iterable. If the input iterable is a generator, the generator will have
+        been exhausted when this function returns. If the input is a generator expression then
+        it will also have been exhausted. In both cases it is probably not useful to retain a
+        reference to the value returned by this function.
+    """
+    for item in iterable:
+        action(item)
+    return iterable
+
+
+def on_each_indexed(
+    iterable: Iterable[T], action: Callable[[int, T], None]
+) -> Iterable[T]:
+    """Invoke ``action`` on each element of ``iterable`` and its index.
+
+    Returns:
+        The original iterable. If the input iterable is a generator, the generator will have
+        been exhausted when this function returns. If the input is a generator expression then
+        it will also have been exhausted. In both cases it is probably not useful to retain a
+        reference to the value returned by this function.
+    """
+    for idx, item in enumerate(iterable):
+        action(idx, item)
+    return iterable
+
 
 
 @overload

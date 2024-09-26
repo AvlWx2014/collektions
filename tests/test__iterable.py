@@ -19,6 +19,7 @@ from hamcrest import (
     is_,
     not_,
     raises,
+    same_instance,
 )
 
 from peculiar_audience import (
@@ -52,6 +53,8 @@ from peculiar_audience._iterable import (
     max_of,
     min_by,
     min_of,
+    on_each,
+    on_each_indexed,
 )
 
 T = TypeVar("T")
@@ -474,6 +477,25 @@ def test_min_of_empty():
 def test_none(iterable, predicate, expected):
     actual = none(iterable, predicate)
     assert_that(actual, is_(expected))
+
+
+def test_on_each():
+    log = []
+    action = log.append
+    expected = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    inputs = range(10)
+    return_value = on_each(inputs, action)
+    assert_that(log, equal_to(expected))
+    assert_that(return_value, same_instance(inputs))
+
+
+def test_on_each_indexed():
+    log = []
+    expected = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+    inputs = range(10)
+    return_value = on_each_indexed(inputs, lambda idx, it: log.append(it + idx))
+    assert_that(log, equal_to(expected))
+    assert_that(return_value, same_instance(inputs))
 
 
 @pytest.mark.parametrize(
