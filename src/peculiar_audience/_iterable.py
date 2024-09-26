@@ -44,9 +44,12 @@ __all__ = [
     "single",
     "single_or_none",
     "sum_by",
+    "take",
+    "take_while",
     "windowed",
 ]
 
+from collections.abc import Generator
 from contextlib import suppress
 from numbers import Real
 from typing import (
@@ -766,6 +769,26 @@ def sum_by(iterable, selector):
     for item in iterable:
         sum_ += selector(item)
     return sum_
+
+
+def take(iterable: Iterable[T], n: int) -> Generator[T, None, None]:
+    """Yield the first ``n`` items of ``iterable``."""
+    require(n >= 0, "n cannot be negative")
+    count = 0
+    for item in iterable:
+        if count >= n:
+            break
+        yield item
+        count += 1
+
+
+def take_while(iterable: Iterable[T], predicate: Callable[[T], bool]) -> Generator[T, None, None]:
+    """Consume items from ``iterable`` while they continue matching ``predicate``."""
+    iterator = iter(iterable)
+    for item in iterator:
+        if not predicate(item):
+            break
+        yield item
 
 
 def windowed(

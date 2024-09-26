@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import string
 from collections import namedtuple
 from collections.abc import Collection, Sized
@@ -64,6 +66,8 @@ from peculiar_audience._iterable import (
     running_fold_indexed,
     single,
     single_or_none,
+    take,
+    take_while,
 )
 
 T = TypeVar("T")
@@ -614,6 +618,32 @@ def test_sum_by(iterable, type_, expected):
     actual = sum_by(ts, lambda o: o.value)
     assert_that(actual, instance_of(type_))
     assert_that(actual, equal_to(expected))
+
+
+@pytest.mark.parametrize(
+    "inputs, n, expected",
+    [
+        (range(10), -5, ValueError),
+        (range(10), 5, [0, 1, 2, 3, 4]),
+        (range(0), 5, []),
+        (range(10), 13, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]),
+    ],
+)
+def test_take(inputs: Iterable[T], n: int, expected: list[T] | type[Exception]):
+    generator = take(inputs, n)
+    if type(expected) is type and issubclass(expected, Exception):
+        with pytest.raises(expected):
+            list(generator)
+    else:
+        actual = list(generator)
+        assert_that(actual, equal_to(expected))
+
+
+def test_take_while():
+    inputs = range(10)
+    expected = list(range(5))
+    actual = take_while(inputs, lambda it: it < 5)
+    assert_that(list(actual), equal_to(expected))
 
 
 @pytest.mark.parametrize(
