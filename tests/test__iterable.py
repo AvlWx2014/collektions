@@ -17,6 +17,7 @@ from hamcrest import (
     has_entries,
     instance_of,
     is_,
+    not_,
     raises,
 )
 
@@ -38,7 +39,14 @@ from peculiar_audience import (
     sum_by,
     windowed,
 )
-from peculiar_audience._iterable import drop, drop_while, fold_indexed, group_by
+from peculiar_audience._iterable import (
+    drop,
+    drop_while,
+    fold_indexed,
+    group_by,
+    is_empty,
+    is_not_empty,
+)
 
 T = TypeVar("T")
 
@@ -332,6 +340,21 @@ def test_group_by_family_non_identity():
         inputs, lambda k: "even" if k % 2 == 0 else "odd", lambda v: v + 1
     )
     assert_that(actual, equal_to(expected))
+
+
+@pytest.mark.parametrize(
+    "inputs, empty",
+    [
+        (range(10), False),
+        ((i for i in range(10)), False),
+        ((i for i in range(0)), True),
+        ([], True),
+        ("", True),
+    ],
+)
+def test_is_empty_family(inputs: Iterable[T], empty: bool):
+    assert_that(is_empty(inputs), is_(empty))
+    assert_that(is_not_empty(inputs), is_(not_(empty)))
 
 
 def test_map_not_none():

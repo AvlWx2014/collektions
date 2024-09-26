@@ -23,6 +23,8 @@ __all__ = [
     "fold_indexed",
     "group_by",
     "group_by_to",
+    "is_empty",
+    "is_not_empty",
     "map_not_none",
     "none",
     "sum_by",
@@ -375,6 +377,21 @@ def group_by_to(
         group = destination.setdefault(key_selector(item), [])
         group.append(value_transform(item))
     return destination
+
+
+def is_empty(iterable: Iterable[T]) -> bool:
+    """Return ``True`` if ``iterable`` is empty, ``False`` otherwise."""
+    # fast-path: if we know iterable is a Collection then just return its
+    # truthyness value
+    if isinstance(iterable, Collection):
+        return not bool(iterable)
+
+    return first_or_none(iterable) is None
+
+
+def is_not_empty(iterable: Iterable[T]) -> bool:
+    """Return ``True`` if ``iterable`` is not empty, ``False`` otherwise."""
+    return not is_empty(iterable)
 
 
 def map_not_none(
