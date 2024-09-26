@@ -7,3 +7,7 @@ def default_predicate(_: T) -> bool:
 
 def default_predicate_with_index(_: int, __: T) -> bool:
     return True
+
+
+def identity(value: T) -> T:
+    return value

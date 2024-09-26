@@ -38,7 +38,7 @@ from peculiar_audience import (
     sum_by,
     windowed,
 )
-from peculiar_audience._iterable import drop, drop_while, fold_indexed
+from peculiar_audience._iterable import drop, drop_while, fold_indexed, group_by
 
 T = TypeVar("T")
 
@@ -315,6 +315,22 @@ def test_fold_indexed():
     expected = n
     # quite possibly the hardest way of adding 1 together n times
     actual = fold_indexed(inputs, 0, lambda x, i, y: x + y - i + 1)
+    assert_that(actual, equal_to(expected))
+
+
+def test_group_by_family():
+    inputs = range(10)
+    expected = {"odd": [1, 3, 5, 7, 9], "even": [0, 2, 4, 6, 8]}
+    actual = group_by(inputs, lambda k: "even" if k % 2 == 0 else "odd")
+    assert_that(actual, equal_to(expected))
+
+
+def test_group_by_family_non_identity():
+    inputs = range(10)
+    expected = {"odd": [2, 4, 6, 8, 10], "even": [1, 3, 5, 7, 9]}
+    actual = group_by(
+        inputs, lambda k: "even" if k % 2 == 0 else "odd", lambda v: v + 1
+    )
     assert_that(actual, equal_to(expected))
 
 

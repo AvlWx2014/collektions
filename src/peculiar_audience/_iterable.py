@@ -21,13 +21,14 @@ __all__ = [
     "flatten",
     "fold",
     "fold_indexed",
+    "group_by",
+    "group_by_to",
     "map_not_none",
     "none",
     "sum_by",
     "windowed",
 ]
 
-from collections.abc import MutableSequence
 from numbers import Real
 from typing import (
     Any,
@@ -43,7 +44,7 @@ from typing import (
     overload,
 )
 
-from ._defaults import default_predicate, default_predicate_with_index
+from ._defaults import default_predicate, default_predicate_with_index, identity
 from ._types import H, K, R, T, V
 from .preconditions import require
 
@@ -300,6 +301,80 @@ def fold_indexed(
     for idx, item in enumerate(iterable):
         acc = accumulator(idx, acc, item)
     return acc
+
+
+@overload
+def group_by(
+    iterable: Iterable[T],
+    key_selector: Callable[[T], K],
+) -> Mapping[K, list[T]]:
+    ...
+
+
+@overload
+def group_by(
+    iterable: Iterable[T],
+    key_selector: Callable[[T], K],
+    value_transform: Callable[[T], V],
+) -> Mapping[K, list[V]]:
+    ...
+
+
+# Ignore: mypy assignment
+# Reason: The identity function is type (T) -> T, which is a valid function type
+#   for use where (T) -> V is expected it simply means that V == T.
+def group_by(
+    iterable: Iterable[T],
+    key_selector: Callable[[T], K],
+    value_transform: Callable[[T], V] = identity,  # type: ignore[assignment]
+) -> Mapping[K, list[V]]:
+    """Groups elements of the original ``iterable`` by the key returned by ``key_selector``.
+
+    If ``value_transform`` is provided, then each element as transformed by ``value_transform``
+    is grouped by the key returned by ``key_selector`` as applied to the original element.
+    """
+    return group_by_to(iterable, {}, key_selector, value_transform)
+
+
+@overload
+def group_by_to(
+    iterable: Iterable[T],
+    destination: MutableMapping[K, list[V]],
+    key_selector: Callable[[T], K],
+) -> Mapping[K, list[T]]:
+    ...
+
+
+@overload
+def group_by_to(
+    iterable: Iterable[T],
+    destination: MutableMapping[K, list[V]],
+    key_selector: Callable[[T], K],
+    value_transform: Callable[[T], V],
+) -> Mapping[K, list[V]]:
+    ...
+
+
+# Ignore: mypy assignment
+# Reason: The identity function is type (T) -> T, which is a valid function type
+#   for use where (T) -> V is expected it simply means that V == T.
+def group_by_to(
+    iterable: Iterable[T],
+    destination: MutableMapping[K, list[V]],
+    key_selector: Callable[[T], K],
+    value_transform: Callable[[T], V] = identity,  # type: ignore[assignment]
+) -> Mapping[K, list[V]]:
+    """Groups elements of the original ``iterable`` by the key returned by ``key_selector``.
+
+    The groupings are added to ``destination``, which is modified in-place.
+
+    If ``value_transform`` is provided, then each element as transformed by ``value_transform``
+    is grouped by the key returned by ``key_selector`` as applied to the original element.
+    """
+    for item in iterable:
+        group = destination.setdefault(key_selector(item), [])
+        group.append(value_transform(item))
+    return destination
 
 
 def map_not_none(
