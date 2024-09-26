@@ -43,7 +43,7 @@ __all__ = [
     "running_fold_indexed",
     "single",
     "single_or_none",
-    "sum_by",
+    "sum_of",
     "take",
     "take_while",
     "unzip",
@@ -748,20 +748,18 @@ def single_or_none(
 
 
 @overload
-def sum_by(iterable: Iterable[T], selector: Callable[[T], int]) -> int:
+def sum_of(iterable: Iterable[T], selector: Callable[[T], int]) -> int:
     ...
 
 
 @overload
-def sum_by(iterable: Iterable[T], selector: Callable[[T], float]) -> float:
+def sum_of(iterable: Iterable[T], selector: Callable[[T], float]) -> float:
     ...
 
 
 # Type hints intentionally left out of the signature since @overload is being used
-def sum_by(iterable, selector):
-    """Accumulate a sum of each item in ``iterable``.
-
-    ``selector`` maps each item in ``iterable`` to a numeric value to add.
+def sum_of(iterable, selector):
+    """Accumulate a sum of each item in ``iterable`` given the value of ``selector`` for that item.
 
     If ``selector`` returns an :py:obj:`int` for each value, then the return value
     will be an :py:obj:`int`. Otherwise, if ``selector`` returns a :py:obj:`float` then

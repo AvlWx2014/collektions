@@ -39,7 +39,7 @@ from peculiar_audience import (
     fold,
     map_not_none,
     none,
-    sum_by,
+    sum_of,
     windowed,
 )
 from peculiar_audience._iterable import (
@@ -616,7 +616,7 @@ def test_sum_by(iterable, type_, expected):
     # create some temporary objects in order to exercise ``selector``
     T = namedtuple("T", ("value",))
     ts = [T(value=type_(i)) for i in iterable]
-    actual = sum_by(ts, lambda o: o.value)
+    actual = sum_of(ts, lambda o: o.value)
     assert_that(actual, instance_of(type_))
     assert_that(actual, equal_to(expected))
 
