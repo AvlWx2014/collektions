@@ -6,7 +6,7 @@ from collections.abc import Collection, Sized
 from math import isnan
 from numbers import Real
 from string import ascii_lowercase
-from typing import Callable, Hashable, Iterable, NamedTuple, Optional, Tuple, TypeVar
+from typing import Callable, Hashable, Iterable, NamedTuple, TypeVar
 
 import pytest
 from hamcrest import (
@@ -80,9 +80,9 @@ class RandomObject(NamedTuple):
 
 
 def test_associate():
-    expected = dict((i, letter.upper()) for i, letter in enumerate(ascii_lowercase))
+    expected = {i: letter.upper() for i, letter in enumerate(ascii_lowercase)}
 
-    def _transform(letter: str) -> Tuple[int, str]:
+    def _transform(letter: str) -> tuple[int, str]:
         return ascii_lowercase.index(letter), letter.upper()
 
     actual = associate(ascii_lowercase, _transform)
@@ -90,13 +90,13 @@ def test_associate():
 
 
 def test_associate_by():
-    expected = dict((i, letter) for i, letter in enumerate(ascii_lowercase))
+    expected = dict(enumerate(ascii_lowercase))
     actual = associate_by(ascii_lowercase, lambda letter: ascii_lowercase.index(letter))
     assert_that(actual, has_entries(expected))
 
 
 def test_associate_with():
-    expected = dict((letter, letter.upper()) for letter in ascii_lowercase)
+    expected = {letter: letter.upper() for letter in ascii_lowercase}
     actual = associate_with(ascii_lowercase, str.upper)
     assert_that(actual, has_entries(expected))
 
@@ -142,7 +142,7 @@ def test_average_returns_nan_on_empty():
             range(10),
             1,
             [
-                range(0, 1),
+                range(1),
                 range(1, 2),
                 range(2, 3),
                 range(3, 4),
@@ -236,7 +236,7 @@ def test_chunked(
 )
 def test_distinct_family(
     iterable: Iterable[T],
-    predicate: Optional[Callable[[T], Hashable]],
+    predicate: Callable[[T], Hashable] | None,
     expected: Iterable[T],
 ):
     if predicate is None:
@@ -648,12 +648,12 @@ def test_take_while():
 
 
 def test_unzip():
-    left = range(1, 27)
-    right = ascii_lowercase
-    zipped = zip(left, right)
-    l, r = unzip(zipped)
-    assert_that(l, equal_to(list(left)))
-    assert_that(r, equal_to(list(right)))
+    expected_left = range(1, 27)
+    expected_right = ascii_lowercase
+    zipped = zip(expected_left, expected_right)
+    actual_left, actual_right = unzip(zipped)
+    assert_that(actual_left, equal_to(list(expected_left)))
+    assert_that(actual_right, equal_to(list(expected_right)))
 
 
 @pytest.mark.parametrize(
@@ -665,7 +665,7 @@ def test_unzip():
             1,
             True,
             [
-                range(0, 10),
+                range(10),
                 range(1, 10),
                 range(2, 10),
                 range(3, 10),
@@ -677,7 +677,7 @@ def test_unzip():
                 range(9, 10),
             ],
         ),
-        (range(10), 10, 1, False, [range(0, 10)]),
+        (range(10), 10, 1, False, [range(10)]),
     ],
 )
 def test_windowed(

@@ -10,11 +10,11 @@ For example:
   + Use ``check{,_not_none}`` to test assumptions about an object's state.
 
 """
+
 from __future__ import annotations
 
 __all__ = ["check", "check_not_none", "require", "require_not_none"]
 
-from typing import Type
 
 from ._types import T
 
@@ -22,7 +22,7 @@ from ._types import T
 def check(
     condition: bool,
     message: str = "Check failed.",
-    exc_type: Type[Exception] = RuntimeError,
+    exc_type: type[Exception] = RuntimeError,
 ) -> None:
     """Check that ``condition`` is ``True``, and raise an exception of type ``exc_type`` if not.
 
@@ -45,7 +45,7 @@ def check_not_none(
 def require(
     condition: bool,
     message: str = "Requirement not met.",
-    exc_type: Type[Exception] = ValueError,
+    exc_type: type[Exception] = ValueError,
 ) -> None:
     """Check that the requirement represented by ``condition`` is met.
 

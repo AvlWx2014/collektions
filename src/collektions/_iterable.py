@@ -61,9 +61,7 @@ from typing import (
     Iterable,
     Mapping,
     MutableMapping,
-    Optional,
     Sequence,
-    Tuple,
     overload,
 )
 
@@ -73,7 +71,7 @@ from .preconditions import require
 
 
 def associate(
-    iterable: Iterable[T], transform: Callable[[T], Tuple[K, V]]
+    iterable: Iterable[T], transform: Callable[[T], tuple[K, V]]
 ) -> Mapping[K, V]:
     """Transform ``iterable`` in to a mapping of key, value pairs as returned by ``transform``."""
     return associate_to(iterable, transform, {})
@@ -81,7 +79,7 @@ def associate(
 
 def associate_to(
     iterable: Iterable[T],
-    transform: Callable[[T], Tuple[K, V]],
+    transform: Callable[[T], tuple[K, V]],
     destination: MutableMapping[K, V],
 ) -> Mapping[K, V]:
     """Update ``destination`` with new entries from ``iterable`` transformed by ``transform``."""
@@ -173,9 +171,7 @@ def distinct(iterable: Iterable[T]) -> list[T]:
     return distinct_by(iterable, hash)
 
 
-def distinct_by(
-    iterable: Iterable[T], selector: Callable[[T], Hashable]
-) -> list[T]:
+def distinct_by(iterable: Iterable[T], selector: Callable[[T], Hashable]) -> list[T]:
     """Return a collection of distinct items from ``iterable`` using ``selector`` as the key.
 
     If two items in ``iterable`` map to the same value from ``selector``, the first one
@@ -249,11 +245,8 @@ def filter_not(
 
 
 def filter_not_none(iterable: Iterable[T | None]) -> list[T]:
-    """Filter ``iterable`` to items that are not `None`.
-    """
+    """Filter ``iterable`` to items that are not `None`."""
     return [item for item in iterable if item is not None]
-
-
 
 
 def first(
@@ -288,9 +281,7 @@ find = first_or_none
 """An alias for first_or_none for situations where ``find`` makes more sense contextually."""
 
 
-def flat_map(
-    iterable: Iterable[T], transform: Callable[[T], Iterable[R]]
-) -> list[R]:
+def flat_map(iterable: Iterable[T], transform: Callable[[T], Iterable[R]]) -> list[R]:
     """
     Return the collection of items yielded from calling ``transform`` on each item of ``iterable``.
     """
@@ -338,8 +329,7 @@ def fold_indexed(
 def group_by(
     iterable: Iterable[T],
     key_selector: Callable[[T], K],
-) -> Mapping[K, list[T]]:
-    ...
+) -> Mapping[K, list[T]]: ...
 
 
 @overload
@@ -347,8 +337,7 @@ def group_by(
     iterable: Iterable[T],
     key_selector: Callable[[T], K],
     value_transform: Callable[[T], V],
-) -> Mapping[K, list[V]]:
-    ...
+) -> Mapping[K, list[V]]: ...
 
 
 # Ignore: mypy assignment
@@ -372,8 +361,7 @@ def group_by_to(
     iterable: Iterable[T],
     destination: MutableMapping[K, list[V]],
     key_selector: Callable[[T], K],
-) -> Mapping[K, list[V]]:
-    ...
+) -> Mapping[K, list[V]]: ...
 
 
 @overload
@@ -382,8 +370,7 @@ def group_by_to(
     destination: MutableMapping[K, list[V]],
     key_selector: Callable[[T], K],
     value_transform: Callable[[T], V],
-) -> Mapping[K, list[V]]:
-    ...
+) -> Mapping[K, list[V]]: ...
 
 
 # Ignore: mypy assignment
@@ -428,9 +415,7 @@ def map_indexed(iterable: Iterable[T], mapping: Callable[[int, T], R]) -> list[R
     return [mapping(idx, item) for idx, item in enumerate(iterable)]
 
 
-def map_not_none(
-    iterable: Iterable[T], mapping: Callable[[T], R | None]
-) -> list[R]:
+def map_not_none(iterable: Iterable[T], mapping: Callable[[T], R | None]) -> list[R]:
     """Transform items in ``iterable`` by applying ``mapping`` to each element.
 
     If ``mapping`` returns `None` for an element, then that element is filtered out of the
@@ -536,10 +521,7 @@ def none(
     iterable: Iterable[T], predicate: Callable[[T], bool] = default_predicate
 ) -> bool:
     """Returns ``True`` if no item in iterable matches ``predicate`` and ``False`` otherwise."""
-    for item in iterable:
-        if predicate(item):
-            return False
-    return True
+    return all(not predicate(item) for item in iterable)
 
 
 def on_each(iterable: Iterable[T], action: Callable[[T], None]) -> Iterable[T]:
@@ -699,13 +681,11 @@ scan_indexed = running_fold_indexed
 
 
 @overload
-def single(iterable: Iterable[T]) -> T:
-    ...
+def single(iterable: Iterable[T]) -> T: ...
 
 
 @overload
-def single(iterable: Iterable[T], predicate: Callable[[T], bool]) -> T:
-    ...
+def single(iterable: Iterable[T], predicate: Callable[[T], bool]) -> T: ...
 
 
 def single(
@@ -731,13 +711,13 @@ def single(
 
 
 @overload
-def single_or_none(iterable: Iterable[T]) -> T | None:
-    ...
+def single_or_none(iterable: Iterable[T]) -> T | None: ...
 
 
 @overload
-def single_or_none(iterable: Iterable[T], predicate: Callable[[T], bool]) -> T | None:
-    ...
+def single_or_none(
+    iterable: Iterable[T], predicate: Callable[[T], bool]
+) -> T | None: ...
 
 
 def single_or_none(
@@ -756,13 +736,11 @@ def single_or_none(
 
 
 @overload
-def sum_of(iterable: Iterable[T], selector: Callable[[T], int]) -> int:
-    ...
+def sum_of(iterable: Iterable[T], selector: Callable[[T], int]) -> int: ...
 
 
 @overload
-def sum_of(iterable: Iterable[T], selector: Callable[[T], float]) -> float:
-    ...
+def sum_of(iterable: Iterable[T], selector: Callable[[T], float]) -> float: ...
 
 
 # Type hints intentionally left out of the signature since @overload is being used
@@ -782,15 +760,15 @@ def sum_of(iterable, selector):
 def take(iterable: Iterable[T], n: int) -> Generator[T, None, None]:
     """Yield the first ``n`` items of ``iterable``."""
     require(n >= 0, "n cannot be negative")
-    count = 0
-    for item in iterable:
-        if count >= n:
+    for idx, item in enumerate(iterable):
+        if idx >= n:
             break
         yield item
-        count += 1
 
 
-def take_while(iterable: Iterable[T], predicate: Callable[[T], bool]) -> Generator[T, None, None]:
+def take_while(
+    iterable: Iterable[T], predicate: Callable[[T], bool]
+) -> Generator[T, None, None]:
     """Consume items from ``iterable`` while they continue matching ``predicate``."""
     iterator = iter(iterable)
     for item in iterator:
