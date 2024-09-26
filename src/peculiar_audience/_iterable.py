@@ -25,6 +25,8 @@ __all__ = [
     "group_by_to",
     "is_empty",
     "is_not_empty",
+    "map_indexed",
+    "map_indexed_not_none",
     "map_not_none",
     "none",
     "sum_by",
@@ -394,16 +396,42 @@ def is_not_empty(iterable: Iterable[T]) -> bool:
     return not is_empty(iterable)
 
 
+def map_indexed(iterable: Iterable[T], mapping: Callable[[int, T], R]) -> Collection[R]:
+    """Transform elements of ``iterable`` by applying ``mapping`` to each element and its index."""
+    return [mapping(idx, item) for idx, item in enumerate(iterable)]
+
+
 def map_not_none(
-    iterable: Iterable[T | None], mapping: Callable[[T | None], R | None]
-) -> Iterable[R]:
-    """Map items in ``iterable`` according to ``mapping``, filtering out any ``None`` values."""
+    iterable: Iterable[T], mapping: Callable[[T], R | None]
+) -> Collection[R]:
+    """Transform items in ``iterable`` by applying ``mapping`` to each element.
+
+    If ``mapping`` returns `None` for an element, then that element is filtered out of the
+    result.
+    """
     result = []
     for item in iterable:
         mapped: R | None = mapping(item)
         if mapped is not None:
             result.append(mapped)
     return result
+
+
+def map_indexed_not_none(
+    iterable: Iterable[T], mapping: Callable[[int, T], R | None]
+) -> Collection[R]:
+    """Transform items in ``iterable`` by applying ``mapping`` to each element and its index.
+
+    If ``mapping`` returns `None` for an element, then that element is filtered out of the
+    result.
+    """
+    result = []
+    for idx, item in enumerate(iterable):
+        mapped: R | None = mapping(idx, item)
+        if mapped is not None:
+            result.append(mapped)
+    return result
+
 
 
 def none(

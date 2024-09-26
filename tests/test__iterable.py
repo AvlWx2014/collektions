@@ -46,6 +46,8 @@ from peculiar_audience._iterable import (
     group_by,
     is_empty,
     is_not_empty,
+    map_indexed,
+    map_indexed_not_none,
 )
 
 T = TypeVar("T")
@@ -361,6 +363,39 @@ def test_map_not_none():
     expected = ["0", "2", "4", "6", "8"]
     actual = map_not_none(range(10), lambda i: str(i) if i % 2 == 0 else None)
     assert_that(actual, contains_exactly(*expected))
+
+
+def test_map_indexed():
+    inputs = range(10)
+    expected = [
+        "0",
+        "2",
+        "4",
+        "6",
+        "8",
+        "10",
+        "12",
+        "14",
+        "16",
+        "18",
+    ]
+    actual = map_indexed(inputs, lambda idx, i: str(i + idx))
+    assert_that(actual, equal_to(expected))
+
+
+def test_map_indexed_not_none():
+    inputs = range(10)
+    expected = [
+        "0",
+        "4",
+        "8",
+        "12",
+        "16",
+    ]
+    actual = map_indexed_not_none(
+        inputs, lambda idx, i: str(i + idx) if i % 2 == 0 else None
+    )
+    assert_that(actual, equal_to(expected))
 
 
 @pytest.mark.parametrize(
