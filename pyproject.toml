@@ -127,7 +127,7 @@ exclude = [
 line-length = 88
 indent-width = 4
 
-target-version = "py37"
+target-version = "py39"
 
 [tool.ruff.lint]
 # Allow unused variables when underscore-prefixed.
