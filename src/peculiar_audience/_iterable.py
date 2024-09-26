@@ -286,7 +286,7 @@ def flat_map(
     """
     Return the collection of items yielded from calling ``transform`` on each item of ``iterable``.
     """
-    result = []
+    result: list[R] = []
     for item in iterable:
         result.extend(transform(item))
     return result
@@ -364,7 +364,7 @@ def group_by_to(
     iterable: Iterable[T],
     destination: MutableMapping[K, list[V]],
     key_selector: Callable[[T], K],
-) -> Mapping[K, list[T]]:
+) -> Mapping[K, list[V]]:
     ...
 
 
@@ -574,7 +574,8 @@ def partition(
             for the given function, while items in the `right` collection yielded a value of
             `False`.
     """
-    left, right = [], []
+    left: list[T] = []
+    right: list[T] = []
     for item in iterable:
         dest = left if predicate(item) else right
         dest.append(item)
@@ -614,7 +615,7 @@ def reduce_indexed(iterable: Iterable[T], accumulator: Callable[[int, T, T], T])
 
 def reduce_indexed_or_none(
     iterable: Iterable[T], accumulator: Callable[[int, T, T], T]
-) -> T:
+) -> T | None:
     """Accumulates value from left to right starting with the first element.
 
     ``accumulator`` takes the accumulated value so far, as well as the next element in ``iterable``
@@ -623,7 +624,7 @@ def reduce_indexed_or_none(
     This function returns `None` if ``iterable`` is empty rather than raising.
     """
     try:
-        reduce_indexed(iterable, accumulator)
+        return reduce_indexed(iterable, accumulator)
     except StopIteration:
         return None
 
@@ -636,7 +637,7 @@ def reduce_or_none(iterable: Iterable[T], accumulator: Callable[[T, T], T]) -> T
     This function returns `None` if ``iterable`` is empty rather than raising.
     """
     try:
-        reduce(iterable, accumulator)
+        return reduce(iterable, accumulator)
     except StopIteration:
         return None
 
@@ -752,7 +753,7 @@ def sum_by(iterable: Iterable[T], selector: Callable[[T], int]) -> int:
 
 
 @overload
-def sum_by(iterable: Iterable[T], selector: Callable[[T], float | int]) -> float:
+def sum_by(iterable: Iterable[T], selector: Callable[[T], float]) -> float:
     ...
 
 

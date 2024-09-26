@@ -124,7 +124,7 @@ def take_last_while(
     ``predicate`` are returned. As soon as the first item not matching predicate is found
     iteration stops and no more items to the left of the first non-matching item are evaluated.
     """
-    result = []
+    result: list[T] = []
     for item in reversed(sequence):
         if not predicate(item):
             break
