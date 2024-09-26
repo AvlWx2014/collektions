@@ -100,3 +100,33 @@ def last_or_none(
         result = None
 
     return result
+
+
+def take_last(sequence: Sequence[T], n: int) -> Sequence[T]:
+    """Return the last ``n`` items from ``sequence``.
+
+    In almost all cases, the input sequence type is preserved in the return value.
+
+    In other words, if a string is the input sequence, a string will be the output. If a
+    range is the input sequence, then a range will be the output, etc.
+    """
+    require(n >= 0, "n cannot be negative")
+    start = max(len(sequence) - n, 0)
+    return sequence[start:]
+
+
+def take_last_while(
+    sequence: Sequence[T], predicate: Callable[[T], bool]
+) -> Sequence[T]:
+    """Return the right-most items in ``sequence`` satisfying ``predicate``.
+
+    In other words, all items in ``sequence`` working backwards from the end satisfying
+    ``predicate`` are returned. As soon as the first item not matching predicate is found
+    iteration stops and no more items to the left of the first non-matching item are evaluated.
+    """
+    result = []
+    for item in reversed(sequence):
+        if not predicate(item):
+            break
+        result.insert(0, item)
+    return result

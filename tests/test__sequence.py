@@ -4,7 +4,13 @@ import pytest
 from hamcrest import assert_that, calling, contains_exactly, empty, equal_to, raises
 
 from peculiar_audience import drop_last, last, last_or_none
-from peculiar_audience._sequence import drop_last_while, fold_right, fold_right_indexed
+from peculiar_audience._sequence import (
+    drop_last_while,
+    fold_right,
+    fold_right_indexed,
+    take_last,
+    take_last_while,
+)
 
 
 def test_drop_last():
@@ -71,4 +77,18 @@ def test_last(iterable, predicate, expected):
 )
 def test_last_or_none(iterable, predicate, expected):
     actual = last_or_none(iterable, predicate)
+    assert_that(actual, equal_to(expected))
+
+
+def test_take_last():
+    inputs = range(10)
+    expected = range(6, 10)
+    actual = take_last(inputs, 4)
+    assert_that(actual, equal_to(expected))
+
+
+def test_take_last_while():
+    inputs = range(10)
+    expected = [5, 6, 7, 8, 9]
+    actual = take_last_while(inputs, lambda it: it >= 5)
     assert_that(actual, equal_to(expected))
