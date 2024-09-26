@@ -46,6 +46,7 @@ __all__ = [
     "sum_by",
     "take",
     "take_while",
+    "unzip",
     "windowed",
 ]
 
@@ -789,6 +790,19 @@ def take_while(iterable: Iterable[T], predicate: Callable[[T], bool]) -> Generat
         if not predicate(item):
             break
         yield item
+
+
+def unzip(iterable: Iterable[tuple[T, R]]) -> tuple[list[T], list[R]]:
+    """Decompose a zip'd ``iterable`` in to its constituent left and right-hand iterables.
+
+    This function performs the inverse operation that :py:func:`zip` does.
+    """
+    left = []
+    right = []
+    for first_, second in iterable:
+        left.append(first_)
+        right.append(second)
+    return left, right
 
 
 def windowed(

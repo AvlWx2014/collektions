@@ -68,6 +68,7 @@ from peculiar_audience._iterable import (
     single_or_none,
     take,
     take_while,
+    unzip,
 )
 
 T = TypeVar("T")
@@ -644,6 +645,15 @@ def test_take_while():
     expected = list(range(5))
     actual = take_while(inputs, lambda it: it < 5)
     assert_that(list(actual), equal_to(expected))
+
+
+def test_unzip():
+    left = range(1, 27)
+    right = ascii_lowercase
+    zipped = zip(left, right)
+    l, r = unzip(zipped)
+    assert_that(l, equal_to(list(left)))
+    assert_that(r, equal_to(list(right)))
 
 
 @pytest.mark.parametrize(
