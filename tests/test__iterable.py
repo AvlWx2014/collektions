@@ -60,6 +60,8 @@ from peculiar_audience._iterable import (
     reduce_indexed,
     reduce_indexed_or_none,
     reduce_or_none,
+    running_fold,
+    running_fold_indexed,
 )
 
 T = TypeVar("T")
@@ -540,15 +542,33 @@ def test_reduce_indexed_empty():
 def test_reduce_indexed_or_none():
     actual = reduce_indexed_or_none((), lambda idx, acc, it: it)
     assert_that(
-        actual, is_(None)  # not using hamcrest's none() function here as it shadows ours
+        actual,
+        is_(None),  # not using hamcrest's none() function here as it shadows ours
     )
 
 
 def test_reduce_or_none():
     actual = reduce_or_none((), lambda acc, it: it)
     assert_that(
-        actual, is_(None)  # not using hamcrest's none() function here as it shadows ours
+        actual,
+        is_(None),  # not using hamcrest's none() function here as it shadows ours
     )
+
+
+def test_running_fold():
+    n = 10
+    inputs = range(n)
+    expected = [10, 10, 11, 13, 16, 20, 25, 31, 38, 46, 55]
+    actual = running_fold(inputs, n, lambda acc, it: acc + it)
+    assert_that(actual, equal_to(expected))
+
+
+def test_running_fold_indexed():
+    n = 10
+    inputs = range(n)
+    expected = [10, 10, 12, 16, 22, 30, 40, 52, 66, 82, 100]
+    actual = running_fold_indexed(inputs, n, lambda idx, acc, it: acc + it + idx)
+    assert_that(actual, equal_to(expected))
 
 
 @pytest.mark.parametrize(

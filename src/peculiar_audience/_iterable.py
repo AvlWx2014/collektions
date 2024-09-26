@@ -39,6 +39,8 @@ __all__ = [
     "reduce_indexed",
     "reduce_indexed_or_none",
     "reduce_or_none",
+    "running_fold",
+    "running_fold_indexed",
     "sum_by",
     "windowed",
 ]
@@ -633,6 +635,52 @@ def reduce_or_none(iterable: Iterable[T], accumulator: Callable[[T, T], T]) -> T
         return None
 
 
+def running_fold(
+    iterable: Iterable[T], initial: R, operation: Callable[[R, T], R]
+) -> list[R]:
+    """Return a running list of accumulated values applying ``operation`` from left to right.
+
+    The resulting list starts with ``initial`` and ``operation`` is called with the previously
+    accumulated value and the next value in ``iterable``.
+
+    For the first item in ``iterable``, ``operation`` is called with ``initial`` and the first
+    value.
+
+    Warning:
+        The accumulated value should not be mutated otherwise it can affect the preceding values.
+    """
+    result = [initial]
+    acc = initial
+    for item in iterable:
+        acc = operation(acc, item)
+        result.append(acc)
+    return result
+
+
+def running_fold_indexed(
+    iterable: Iterable[T], initial: R, operation: Callable[[int, R, T], R]
+) -> list[R]:
+    """Return a running list of accumulated values applying ``operation`` from left to right.
+
+    The resulting list starts with ``initial`` and ``operation`` is called with the previously
+    accumulated value and the next value in ``iterable`` along with its index.
+
+    For the first item in ``iterable``, ``operation`` is called with ``initial`` and the first
+    value.
+
+    Warning:
+        The accumulated value should not be mutated otherwise it can affect the preceding values.
+    """
+    result = [initial]
+    acc = initial
+    for idx, item in enumerate(iterable):
+        acc = operation(idx, acc, item)
+        result.append(acc)
+    return result
+
+
+scan = running_fold
+scan_indexed = running_fold_indexed
 
 
 @overload
