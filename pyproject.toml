@@ -1,6 +1,6 @@
 [project]
-name = "peculiar-audience"
-description = "A collection of Python functions on iterables and collections inspired by the Kotlin collections standard library API."
+name = "collektions"
+description = "A collection of Python functions on iterables and collections inspired by the Kotlin collections API."
 authors = [
     {name = "Ryan Smith", email = "ryan.d.smith.106@gmail.com"},
 ]
@@ -48,7 +48,7 @@ show_traceback = true
 
 [tool.pytest.ini_options]
 addopts = [
-    "--cov=peculiar_audience",
+    "--cov=collektions",
     "--cov-report=html",
     "--cov-report=term",
     "--cov-branch"
@@ -99,4 +99,4 @@ security-scan = "bandit -rc pyproject.toml src/ tests/"
 fallback_version = "0.0.0"
 source = "scm"
 write_template = "__version__: str = \"{}\"\n"
-write_to = "peculiar_audience/version.py"
+write_to = "collektions/version.py"

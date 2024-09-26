@@ -1,7 +1,7 @@
 import pytest as pytest
 from hamcrest import assert_that, is_
 
-from peculiar_audience.shadow import (
+from collektions.shadow import (
     __pyall,
     __pyany,
     __pyfilter,

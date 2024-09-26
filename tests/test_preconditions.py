@@ -1,6 +1,6 @@
 from hamcrest import assert_that, calling, has_string, not_, raises
 
-from peculiar_audience.preconditions import (
+from collektions.preconditions import (
     check,
     check_not_none,
     require,

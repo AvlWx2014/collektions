@@ -24,7 +24,7 @@ from hamcrest import (
     same_instance,
 )
 
-from peculiar_audience import (
+from collektions import (
     associate,
     associate_by,
     associate_with,
@@ -42,7 +42,7 @@ from peculiar_audience import (
     sum_of,
     windowed,
 )
-from peculiar_audience._iterable import (
+from collektions._iterable import (
     drop,
     drop_while,
     fold_indexed,
