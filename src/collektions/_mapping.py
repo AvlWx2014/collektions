@@ -9,46 +9,28 @@ __all__ = [
     "map_values_to",
 ]
 
-from collections.abc import Iterable, Mapping, MutableMapping, MutableSequence
+from collections.abc import Mapping, MutableMapping
 from typing import Callable
 
 from ._types import K, R, V
 
 
 def filter_keys(
-    mapping: Mapping[K, V], predicate: Callable[[K, V], bool]
-) -> Iterable[K]:
-    """Filter ``mapping``'s key set based on ``predicate``.
-
-    The predicate function takes both the key and value from each key/value pair
-    so that filtering can be done on either.
-
-    Returns:
-        A collection of the key from each key/value pair for which predicate returns ``True``.
+    mapping: Mapping[K, V], predicate: Callable[[K], bool]
+) -> Mapping[K, V]:
     """
-    result: MutableSequence[K] = []
-    for key, value in mapping.items():
-        if predicate(key, value):
-            result.append(key)
-    return result
+    Return a new mapping of all key/value pairs from ``mapping`` where `key` satisfies ``predicate``.
+    """
+    return {k: v for k, v in mapping.items() if predicate(k)}
 
 
 def filter_values(
-    mapping: Mapping[K, V], predicate: Callable[[K, V], bool]
-) -> Iterable[V]:
-    """Filter ``mapping``'s value set based on ``predicate``.
-
-    The predicate function takes both the key and value from each key/value pair
-    so that filtering can be done on either.
-
-    Returns:
-        A collection of the value from each key/value pair for which predicate returns ``True``.
+    mapping: Mapping[K, V], predicate: Callable[[V], bool]
+) -> Mapping[K, V]:
     """
-    result: MutableSequence[V] = []
-    for key, value in mapping.items():
-        if predicate(key, value):
-            result.append(value)
-    return result
+    Return a new mapping of all key/value pairs from ``mapping`` where `value` satisfies ``predicate``.
+    """
+    return {k: v for k, v in mapping.items() if predicate(v)}
 
 
 def map_keys(mapping: Mapping[K, V], transform: Callable[[K, V], R]) -> Mapping[R, V]:
