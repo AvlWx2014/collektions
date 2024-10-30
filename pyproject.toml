@@ -5,7 +5,6 @@ authors = [
     {name = "Ryan Smith", email = "ryan.d.smith.106@gmail.com"},
 ]
 dependencies = [
-    "ruff>=0.6.8",
 ]
 requires-python = ">=3.9"
 readme = "README.md"
@@ -70,6 +69,7 @@ dev = [
     "bandit>=1.7.5",
     "types-requests>=2.31.0.9",
     "types-PyYAML>=6.0.12.12",
+    "ruff>=0.7.1",
 ]
 test = [
     "PyHamcrest>=2.0.4",
