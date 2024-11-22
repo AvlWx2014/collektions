@@ -3,6 +3,9 @@ from __future__ import annotations
 __all__ = [
     "drop_last",
     "drop_last_while",
+    "find_last",
+    "fold_right",
+    "fold_right_indexed",
     "last",
     "last_or_none",
     "take_last",
