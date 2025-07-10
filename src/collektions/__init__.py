@@ -22,6 +22,8 @@ __all__ = [
     "find",
     "find_last",
     "first",
+    "first_not_none_of",
+    "first_not_none_of_or_none",
     "first_or_none",
     "flat_map",
     "flatten",

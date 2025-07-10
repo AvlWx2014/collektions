@@ -45,6 +45,8 @@ from collektions import (
 from collektions._iterable import (
     drop,
     drop_while,
+    first_not_none_of,
+    first_not_none_of_or_none,
     fold_indexed,
     group_by,
     is_empty,
@@ -304,6 +306,38 @@ def test_first(iterable, predicate, expected):
     else:
         actual = first(iterable, predicate)
         assert_that(actual, equal_to(expected))
+
+
+@pytest.mark.parametrize(
+    "iterable,predicate,expected",
+    [
+        ([2, 4, 6, 8, 1, 3, 5, 7, 9, 0], lambda i: None if not i % 2 else i, 1),
+        ([1, 3, 5, 7, 9, 0, 2, 4, 6, 8], lambda i: i if not i % 2 else None, 0),
+        (range(1, 10), lambda _: None, ValueError()),
+    ],
+)
+def test_first_not_none_of(iterable, predicate, expected):
+    if isinstance(expected, Exception):
+        assert_that(
+            calling(first_not_none_of).with_args(iterable, predicate),
+            raises(type(expected)),
+        )
+    else:
+        actual = first_not_none_of(iterable, predicate)
+        assert_that(actual, equal_to(expected))
+
+
+@pytest.mark.parametrize(
+    "iterable,predicate,expected",
+    [
+        ([2, 4, 6, 8, 1, 3, 5, 7, 9, 0], lambda i: None if not i % 2 else i, 1),
+        ([1, 3, 5, 7, 9, 0, 2, 4, 6, 8], lambda i: i if not i % 2 else None, 0),
+        (range(1, 10), lambda _: None, None),
+    ],
+)
+def test_first_not_none_of_or_none(iterable, predicate, expected):
+    actual = first_not_none_of_or_none(iterable, predicate)
+    assert_that(actual, equal_to(expected))
 
 
 @pytest.mark.parametrize(
