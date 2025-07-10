@@ -20,6 +20,8 @@ __all__ = [
     "filter_not",
     "filter_not_none",
     "first",
+    "first_not_none_of",
+    "first_not_none_of_or_none",
     "first_or_none",
     "find",
     "flat_map",
@@ -282,6 +284,30 @@ def first(
         if predicate(item):
             return item
     raise ValueError("No item found matching predicate.")
+
+
+def first_not_none_of(iterable: Iterable[T], transform: Callable[[T], R | None]) -> R:
+    """Returns the first item of `iterable` that is not `None` after mapping with `transform`.
+
+    Raises:
+        ValueError: If `transform` maps all items in `iterable` to `None`.
+    """
+    if (result := first_not_none_of_or_none(iterable, transform)) is None:
+        raise ValueError("All elements mapped to None by the given transform.")
+    return result
+
+
+def first_not_none_of_or_none(
+    iterable: Iterable[T], transform: Callable[[T], R | None]
+) -> R | None:
+    """Returns the first item of `iterable` that is not `None` after mapping with `transform`.
+
+    If `transform` maps all items in `iterable` to `None`, then `None` is returned.
+    """
+    for item in iterable:
+        if (result := transform(item)) is not None:
+            return result
+    return None
 
 
 def first_or_none(
