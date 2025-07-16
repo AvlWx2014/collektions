@@ -100,6 +100,8 @@ from ._iterable import (
     filter_not_none,
     find,
     first,
+    first_not_none_of,
+    first_not_none_of_or_none,
     first_or_none,
     flat_map,
     flatten,
