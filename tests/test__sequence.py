@@ -3,11 +3,13 @@ from collections.abc import Sized
 import pytest
 from hamcrest import assert_that, calling, contains_exactly, empty, equal_to, raises
 
-from collektions import drop_last, last, last_or_none
-from collektions._sequence import (
+from collektions import (
+    drop_last,
     drop_last_while,
     fold_right,
     fold_right_indexed,
+    last,
+    last_or_none,
     take_last,
     take_last_while,
 )

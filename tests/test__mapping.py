@@ -2,8 +2,7 @@ import calendar
 
 from hamcrest import assert_that, equal_to
 
-from collektions import filter_keys, filter_values
-from collektions._mapping import map_keys, map_values
+from collektions import filter_keys, filter_values, map_keys, map_values
 
 
 def test_filter_keys():
