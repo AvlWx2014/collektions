@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import string
 from collections import namedtuple
-from collections.abc import Collection, Hashable, Iterable, Sized
+from collections.abc import Callable, Collection, Hashable, Iterable, Sized
 from math import isnan
 from numbers import Real
 from string import ascii_lowercase
-from typing import Callable, NamedTuple, TypeVar
+from typing import NamedTuple, TypeVar
 
 import pytest
 from hamcrest import (
@@ -682,7 +682,7 @@ def test_take_while():
 def test_unzip():
     expected_left = range(1, 27)
     expected_right = ascii_lowercase
-    zipped = zip(expected_left, expected_right)
+    zipped = zip(expected_left, expected_right, strict=False)
     actual_left, actual_right = unzip(zipped)
     assert_that(actual_left, equal_to(list(expected_left)))
     assert_that(actual_right, equal_to(list(expected_right)))

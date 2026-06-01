@@ -55,7 +55,7 @@ def test_filter():
 
     compat = __pyfilter(_is_even, iterable)
     actual = filter(iterable, _is_even)
-    for e, a, c in zip(expected, actual, compat):
+    for e, a, c in zip(expected, actual, compat, strict=False):
         assert_that(
             e == c == a, reason=f"Expected: {e} Actual: {a} Python Built-in: {c}"
         )
@@ -66,7 +66,7 @@ def test_map():
     expected = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     compat = __pymap(str.upper, iterable)
     actual = list(map(iterable, str.upper))
-    for e, a, c in zip(expected, actual, compat):
+    for e, a, c in zip(expected, actual, compat, strict=False):
         assert_that(
             e == c == a, reason=f"Expected: {e} Actual: {a} Python Built-in: {c}"
         )

@@ -15,9 +15,7 @@ from __future__ import annotations
 
 __all__ = ["check", "check_not_none", "require", "require_not_none"]
 
-from typing import Any
-
-from typing_extensions import TypeGuard
+from typing import Any, TypeGuard
 
 from ._types import T
 
