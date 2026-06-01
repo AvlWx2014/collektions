@@ -11,8 +11,8 @@ readme = "README.md"
 dynamic = ["version"]
 
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 
 [tool.isort]
@@ -23,7 +23,6 @@ py_version = 311
 exclude_dirs = [
     ".venv",
     ".*_cache",
-    ".pdm-build",
     "docs",
     "htmlcov",
     ".gitlab",
@@ -61,9 +60,7 @@ testpaths = ["tests"]
 exclude_also = [
     '^\s*\.\.\.$'  # exclude lines which are Ellipsis objects
 ]
-[tool.pdm]
-distribution = true
-[tool.pdm.dev-dependencies]
+[dependency-groups]
 dev = [
     "mypy>=1.5.1",
     "bandit>=1.7.5",
@@ -77,21 +74,13 @@ test = [
     "pytest-cov>=4.1.0",
 ]
 
-[tool.pdm.scripts]
-format-check = "ruff format --check --config ./pyproject.toml src/ tests/"
-format = "ruff format --config ./pyproject.toml src/ tests/"
-lint-check = "ruff check --config ./pyproject.toml src/ tests/"
-lint = "ruff check --fix --config ./pyproject.toml src/ tests/"
-type-check = "mypy --config-file ./pyproject.toml src/"
-test = "pytest"
-vuln-check = "bandit -rc pyproject.toml src/ tests/"
-verify = {composite = ["lint", "format", "type-check", "vuln-check"]}
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
 
-[tool.pdm.version]
-fallback_version = "0.0.0"
-source = "scm"
-write_template = "__version__: str = \"{}\"\n"
-write_to = "collektions/version.py"
+[tool.hatch.build.hooks.vcs]
+version-file = "src/collektions/version.py"
+template = "__version__: str = \"{version}\"\n"
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
