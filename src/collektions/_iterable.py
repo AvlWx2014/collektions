@@ -4,9 +4,9 @@ from __future__ import annotations
 
 __all__ = [
     "associate",
-    "associate_to",
     "associate_by",
     "associate_by_to",
+    "associate_to",
     "associate_with",
     "associate_with_to",
     "average",
@@ -19,11 +19,11 @@ __all__ = [
     "filter_isinstance",
     "filter_not",
     "filter_not_none",
+    "find",
     "first",
     "first_not_none_of",
     "first_not_none_of_or_none",
     "first_or_none",
-    "find",
     "flat_map",
     "flatten",
     "fold",
@@ -37,8 +37,8 @@ __all__ = [
     "is_empty",
     "is_not_empty",
     "map_indexed",
-    "map_not_none",
     "map_indexed_not_none",
+    "map_not_none",
     "max_by",
     "max_of",
     "min_by",
@@ -81,7 +81,6 @@ from collections.abc import (
     Sequence,
 )
 from contextlib import suppress
-from numbers import Real
 from typing import (
     Any,
     Callable,
@@ -168,7 +167,7 @@ def associate_with_to(
     return destination
 
 
-def average(iterable: Iterable[Real]) -> float:
+def average(iterable: Iterable[float | int]) -> float:
     """Return the average (mean) of the values in ``iterable``.
 
     If ``iterable`` has no items, then this function returns ``float("NaN")``,
@@ -178,9 +177,12 @@ def average(iterable: Iterable[Real]) -> float:
     """
 
     sum_ = 0
-    count = 0
+    count: int = 0
     for number in iterable:
-        sum_ += number
+        # Ignore: mypy assignment
+        # Reason: Python will automatically widen int to float if `iterable` is
+        #   `Iterable[float]`, otherwise this will stay an int.
+        sum_ += number  # type: ignore[assignment]
         count += 1
     return sum_ / count if count else float("NaN")
 
