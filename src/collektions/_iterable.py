@@ -72,6 +72,7 @@ __all__ = [
 
 
 from collections.abc import (
+    Callable,
     Collection,
     Generator,
     Hashable,
@@ -83,7 +84,6 @@ from collections.abc import (
 from contextlib import suppress
 from typing import (
     Any,
-    Callable,
     overload,
 )
 

@@ -9,8 +9,7 @@ __all__ = [
     "map_values_to",
 ]
 
-from collections.abc import Mapping, MutableMapping
-from typing import Callable
+from collections.abc import Callable, Mapping, MutableMapping
 
 from ._types import K, R, V
 
