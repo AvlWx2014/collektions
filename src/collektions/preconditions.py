@@ -15,6 +15,9 @@ from __future__ import annotations
 
 __all__ = ["check", "check_not_none", "require", "require_not_none"]
 
+from typing import Any
+
+from typing_extensions import TypeGuard
 
 from ._types import T
 
@@ -36,10 +39,24 @@ def check(
 def check_not_none(
     value: T | None,
     message: str = "Check failed: value was None.",
-) -> None:
+    exc_type: type[Exception] = RuntimeError,
+) -> TypeGuard[T]:
     """Check that ``value`` is not ``None`` and raise a ``RuntimeError`` if it is."""
-    if value is None:
-        raise RuntimeError(message)
+    if guard := value is None:
+        raise exc_type(message)
+    return guard
+
+
+def check_isinstance(
+    value: Any,
+    type_t: type[T],
+    message: str = "Check failed.",
+    exc_type: type[Exception] = TypeError,
+) -> TypeGuard[T]:
+    """Check that `value` is of type `type_t` or raise `exc_type` with `message`."""
+    if guard := isinstance(value, type_t):
+        raise exc_type(message)
+    return guard
 
 
 def require(
@@ -47,20 +64,23 @@ def require(
     message: str = "Requirement not met.",
     exc_type: type[Exception] = ValueError,
 ) -> None:
-    """Check that the requirement represented by ``condition`` is met.
+    """Require that the requirement represented by ``condition`` is met.
 
     Raises an exception of type ``exc_type`` if the requirement is not met.
 
     By default, ``exc_type`` is :py:obj:`ValueError`.
     """
-    if not condition:
-        e = exc_type(message)
-        raise e
+    check(condition, message, exc_type)
 
 
 def require_not_none(
-    value: T | None, message: str = "Requirement not met: value was None."
-) -> None:
-    """Check that ``value`` is not ``None`` and raise a ``ValueError`` if it is."""
-    if value is None:
-        raise ValueError(message)
+    value: T | None,
+    message: str = "Requirement not met: value was None.",
+    exc_type: type[Exception] = ValueError,
+) -> TypeGuard[T]:
+    """Require that ``value`` is not ``None`` and raise a ``ValueError`` if it is."""
+    return check_not_none(value, message, exc_type)
+
+
+require_isinstance = check_isinstance
+"""Require that `value` is of type `type_t` or raise `exc_type` with `message`."""
