@@ -30,26 +30,18 @@ jobs:
         with:
           python-version: "3.11"
           architecture: x64
-      - name: Install PDM
-        run: pip install setuptools wheel pdm
-      - name: Cache Venv
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
-        with:
-          path: .venv
-          key: venv-dev-${{ hashFiles('pdm.lock') }}
-          restore-keys: |
-            venv-
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
       - name: Provision Environment
-        run: pdm sync -dG:all
-        if: steps.cache-venv.outputs.cache-hit != 'true'
+        run: uv sync --group dev
       - name: Lint
-        run: pdm lint-check
+        run: uv run ruff check --config ./pyproject.toml src/ tests/
       - name: Check Formatting
-        run: pdm format-check
+        run: uv run ruff format --check --config ./pyproject.toml src/ tests/
       - name: Type Check
-        run: pdm type-check
+        run: uv run mypy --config-file ./pyproject.toml src/
       - name: Security Scan
-        run: pdm vuln-check
+        run: uv run bandit -rc pyproject.toml src/ tests/
 
   TestSuite:
     runs-on: ubuntu-latest
@@ -65,21 +57,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
-          cache: pip
-      - name: Cache Venv
-        id: cache-venv
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684  # v4.2.3
-        with:
-          path: .venv
-          key: venv-${{ matrix.python-version }}-${{ hashFiles('pdm.lock') }}
-          restore-keys: |
-            venv-
-      - name: Install PDM
-        run: pip install setuptools wheel pdm
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
       - name: Provision Environment
-        run: pdm sync -dG:all
-        if: steps.cache-venv.outputs.cache-hit != 'true'
+        run: uv sync --group test
       - name: Unit Tests
-        run: pdm test
-
-
+        run: uv run pytest
