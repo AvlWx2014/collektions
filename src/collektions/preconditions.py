@@ -17,8 +17,6 @@ __all__ = ["check", "check_not_none", "require", "require_not_none"]
 
 from typing import Any
 
-from typing_extensions import TypeGuard
-
 from ._types import T
 
 
@@ -40,11 +38,11 @@ def check_not_none(
     value: T | None,
     message: str = "Check failed: value was None.",
     exc_type: type[Exception] = RuntimeError,
-) -> TypeGuard[T]:
+) -> T:
     """Check that ``value`` is not ``None`` and raise a ``RuntimeError`` if it is."""
-    if guard := value is None:
+    if value is None:
         raise exc_type(message)
-    return guard
+    return value
 
 
 def check_isinstance(
@@ -52,11 +50,11 @@ def check_isinstance(
     type_t: type[T],
     message: str = "Check failed.",
     exc_type: type[Exception] = TypeError,
-) -> TypeGuard[T]:
+) -> T:
     """Check that `value` is of type `type_t` or raise `exc_type` with `message`."""
-    if guard := isinstance(value, type_t):
+    if isinstance(value, type_t):
         raise exc_type(message)
-    return guard
+    return value
 
 
 def require(
@@ -77,7 +75,7 @@ def require_not_none(
     value: T | None,
     message: str = "Requirement not met: value was None.",
     exc_type: type[Exception] = ValueError,
-) -> TypeGuard[T]:
+) -> T:
     """Require that ``value`` is not ``None`` and raise a ``ValueError`` if it is."""
     return check_not_none(value, message, exc_type)
 
