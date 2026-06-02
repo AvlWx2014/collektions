@@ -4,13 +4,16 @@ on:
   pull_request:
     branches:
       - main
-      - dev
+      - release/*
+      - maintenance/*
     paths-ignore:
       - docs/
       - "*.md"
   push:
     branches:
       - main
+      - release/*
+      - maintenance/*
     paths-ignore:
       - docs/
       - "*.md"
